@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Accountool.Models
 {
+    [Table("CustomUserRoles")]
     public class AspNetUserRole
     {
         [ForeignKey("AspNetUsers")]

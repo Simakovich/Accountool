@@ -261,7 +261,7 @@ namespace Accountool.Data
                 entity.Property(e => e.Name).HasMaxLength(200);
             });
 
-            OnModelCreatingPartial(modelBuilder);
+            OnModelCreatingPartial(modelBuilder);base.OnModelCreating(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
