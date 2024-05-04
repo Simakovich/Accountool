@@ -1,0 +1,342 @@
+USE [master]
+GO
+/****** Object:  Database [Accountool]    Script Date: 30.04.2024 0:44:53 ******/
+CREATE DATABASE [Accountool]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Accountool', FILENAME = N'D:\Program Files\Microsoft SQL Server\MSSQL16.SQLSERVER\MSSQL\DATA\Accountool.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'Accountool_log', FILENAME = N'D:\Program Files\Microsoft SQL Server\MSSQL16.SQLSERVER\MSSQL\DATA\Accountool_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [Accountool] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Accountool].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Accountool] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Accountool] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Accountool] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Accountool] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Accountool] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Accountool] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [Accountool] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Accountool] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Accountool] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Accountool] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Accountool] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Accountool] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Accountool] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Accountool] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Accountool] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [Accountool] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Accountool] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Accountool] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Accountool] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Accountool] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Accountool] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Accountool] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Accountool] SET RECOVERY FULL 
+GO
+ALTER DATABASE [Accountool] SET  MULTI_USER 
+GO
+ALTER DATABASE [Accountool] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Accountool] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Accountool] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Accountool] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [Accountool] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [Accountool] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'Accountool', N'ON'
+GO
+ALTER DATABASE [Accountool] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [Accountool] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [Accountool]
+GO
+ALTER LOGIN sa WITH PASSWORD='Password1!' 
+/****** Object:  Table [dbo].[AspNetClaims]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetRoleClaims]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetRoleClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[RoleId] [nvarchar](450) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetRoles]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetRoles](
+	[Id] [nvarchar](450) NOT NULL,
+	[Name] [nvarchar](256) NULL,
+	[NormalizedName] [nvarchar](256) NULL,
+	[ConcurrencyStamp] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserClaims]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserClaims](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+	[ClaimType] [nvarchar](max) NULL,
+	[ClaimValue] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserLogins]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserLogins](
+	[LoginProvider] [nvarchar](450) NOT NULL,
+	[ProviderKey] [nvarchar](450) NOT NULL,
+	[ProviderDisplayName] [nvarchar](max) NULL,
+	[UserId] [nvarchar](450) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[LoginProvider] ASC,
+	[ProviderKey] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserRoles]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserRoles](
+	[UserId] [nvarchar](450) NOT NULL,
+	[RoleId] [nvarchar](450) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[RoleId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUsers]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUsers](
+	[Id] [nvarchar](450) NOT NULL,
+	[UserName] [nvarchar](256) NULL,
+	[NormalizedUserName] [nvarchar](256) NULL,
+	[Email] [nvarchar](256) NULL,
+	[NormalizedEmail] [nvarchar](256) NULL,
+	[EmailConfirmed] [bit] NOT NULL,
+	[PasswordHash] [nvarchar](max) NULL,
+	[SecurityStamp] [nvarchar](max) NULL,
+	[ConcurrencyStamp] [nvarchar](max) NULL,
+	[PhoneNumber] [nvarchar](max) NULL,
+	[PhoneNumberConfirmed] [bit] NOT NULL,
+	[TwoFactorEnabled] [bit] NOT NULL,
+	[LockoutEnd] [datetimeoffset](7) NULL,
+	[LockoutEnabled] [bit] NOT NULL,
+	[AccessFailedCount] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AspNetUserTokens]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AspNetUserTokens](
+	[UserId] [nvarchar](450) NOT NULL,
+	[LoginProvider] [nvarchar](450) NOT NULL,
+	[Name] [nvarchar](450) NOT NULL,
+	[Value] [nvarchar](max) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserId] ASC,
+	[LoginProvider] ASC,
+	[Name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Devices]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Devices](
+	[DeviceId] [int] IDENTITY(1,1) NOT NULL,
+	[DeviceName] [nvarchar](255) NULL,
+	[DeviceDescription] [nvarchar](255) NULL,
+	[ServiceTypeId] [int] NULL,
+	[ObjectId] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[DeviceId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Measurement]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Measurement](
+	[MeasurementId] [int] IDENTITY(1,1) NOT NULL,
+	[MeasurementDate] [date] NULL,
+	[MeasurementValue] [decimal](10, 2) NULL,
+	[DeviceId] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[MeasurementId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MeasurementType]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MeasurementType](
+	[TypeId] [int] IDENTITY(1,1) NOT NULL,
+	[TypeDescription] [nvarchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[TypeId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[ObjectDescription]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ObjectDescription](
+	[ObjectId] [int] IDENTITY(1,1) NOT NULL,
+	[ObjectName] [nvarchar](255) NULL,
+	[ObjectAddress] [nvarchar](255) NULL,
+	[UserId] [nvarchar](450) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ObjectId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Reports]    Script Date: 30.04.2024 0:44:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Reports](
+	[ReportId] [int] IDENTITY(1,1) NOT NULL,
+	[ReportDate] [date] NULL,
+	[ReportName] [nvarchar](255) NULL,
+	[UserId] [nvarchar](450) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ReportId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[AspNetUserClaims]  WITH CHECK ADD FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+GO
+ALTER TABLE [dbo].[AspNetUserRoles]  WITH CHECK ADD FOREIGN KEY([RoleId])
+REFERENCES [dbo].[AspNetRoles] ([Id])
+GO
+ALTER TABLE [dbo].[AspNetUserRoles]  WITH CHECK ADD FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+GO
+ALTER TABLE [dbo].[Devices]  WITH CHECK ADD FOREIGN KEY([ObjectId])
+REFERENCES [dbo].[ObjectDescription] ([ObjectId])
+GO
+ALTER TABLE [dbo].[Devices]  WITH CHECK ADD FOREIGN KEY([ServiceTypeId])
+REFERENCES [dbo].[MeasurementType] ([TypeId])
+GO
+ALTER TABLE [dbo].[Measurement]  WITH CHECK ADD FOREIGN KEY([DeviceId])
+REFERENCES [dbo].[Devices] ([DeviceId])
+GO
+ALTER TABLE [dbo].[ObjectDescription]  WITH CHECK ADD FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+GO
+ALTER TABLE [dbo].[Reports]  WITH CHECK ADD FOREIGN KEY([UserId])
+REFERENCES [dbo].[AspNetUsers] ([Id])
+GO
+USE [master]
+GO
+ALTER DATABASE [Accountool] SET  READ_WRITE 
+GO
+CREATE TABLE KiosksSalesData
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Kiosk NVARCHAR(100) NOT NULL,
+    Month INT NOT NULL,
+    Sales FLOAT NOT NULL
+)
