@@ -13,11 +13,7 @@ namespace Accountool.Models
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("OrgName")]
-        public int OrgNameId { get; set; }
-
-        [Required]
-        public int Dogovor { get; set; }
+        public string Name { get; set; } = null!;
 
         [Required]
         public int Telefon { get; set; }
@@ -25,13 +21,7 @@ namespace Accountool.Models
         [Required]
         public string Email { get; set; } = null!;
 
-        [Required]
-        public int Limit { get; set; }
-
         [InverseProperty("Organization")]
-        public virtual ICollection<Kiosk> Kiosks { get; set; } = new List<Kiosk>();
-
-        [InverseProperty("Organizations")]
-        public virtual OrgName OrgName { get; set; } = null!;
+        public virtual ICollection<Contract> Contracts { get; set; } = new List<Contract>();
     }
 }

@@ -13,7 +13,7 @@ namespace Accountool.Models
         public int Id { get; set; }
 
         [Required]
-        public string NomerKioska { get; set; } = null!;
+        public string KioskName { get; set; } = null!;
 
         [Required]
         public virtual string AdresSection { get; set; } = null!;

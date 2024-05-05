@@ -266,7 +266,7 @@ CREATE TABLE Town
 CREATE TABLE KioskSection
 (
     Id INT PRIMARY KEY IDENTITY,
-    NomerKioska NVARCHAR(200) NOT NULL,
+    KioskName NVARCHAR(200) NOT NULL,
     AdresSection NVARCHAR(200) NOT NULL,
     AreaSection FLOAT NOT NULL,
     Kadastr NVARCHAR(200) NOT NULL,
@@ -276,44 +276,43 @@ CREATE TABLE KioskSection
     DateArenda DATETIME NOT NULL
 );
 
-CREATE TABLE OrgName
-(
-    Id INT PRIMARY KEY IDENTITY,
-    Name NVARCHAR(200) NOT NULL
-);
-
 CREATE TABLE Organization
 (
     Id INT PRIMARY KEY IDENTITY,
-    OrgNameId INT NOT NULL,
-    Dogovor INT NOT NULL,
-    Telefon INT NOT NULL,
-    Email NVARCHAR(200) NOT NULL,
-    [Limit] INT NOT NULL
-    CONSTRAINT FK_Kiosk_OrgName FOREIGN KEY (OrgNameId)
-        REFERENCES OrgName (Id)
+    Name NVARCHAR(200) NOT NULL,
+    Telefon INT NULL,
+    Email NVARCHAR(200) NULL,
 );
 
 CREATE TABLE Kiosk
 (
     Id INT PRIMARY KEY IDENTITY,
-    Nomer NVARCHAR(200) NOT NULL,
+    [Name] NVARCHAR(200) NOT NULL,
     ModelKiosk NVARCHAR(200) NULL,
     Arenda DATETIME NULL,
     TownId INT NULL,
-    Adress NVARCHAR(200) NULL,
+    Address NVARCHAR(200) NULL,
     Area FLOAT NOT NULL,
-    OrganizationId INT NULL,
     KioskSectionId INT NULL,
 
     CONSTRAINT FK_Kiosk_Town FOREIGN KEY (TownId)
         REFERENCES Town (Id),
 
-    CONSTRAINT FK_Kiosk_Organization FOREIGN KEY (OrganizationId)
-        REFERENCES Organization (Id),
-
     CONSTRAINT FK_Kiosk_KioskSection FOREIGN KEY (KioskSectionId)
         REFERENCES KioskSection (Id)
+);
+
+CREATE TABLE Contract
+(
+    Id INT PRIMARY KEY IDENTITY,
+    OrganizationId INT NOT NULL,
+    KioskId INT NOT NULL,
+    Dogovor INT NOT NULL,
+    [Limit] INT NOT NULL,
+    CONSTRAINT FK_Contract_Organization FOREIGN KEY (OrganizationId)
+        REFERENCES Organization (Id),
+    CONSTRAINT FK_Contract_Kiosk FOREIGN KEY (KioskId)
+        REFERENCES Kiosk (Id)
 );
 
 CREATE TABLE Equipment
@@ -346,6 +345,7 @@ CREATE TABLE Indication
 (
     Id INT PRIMARY KEY IDENTITY,
     Month DATETIME NOT NULL,
+	Value DECIMAL (8,2) NOT NULL,
     Tarif1 FLOAT NOT NULL,
     Tarif2 FLOAT NOT NULL,
     TarifSumm FLOAT NOT NULL,
@@ -394,12 +394,58 @@ VALUES
 ('Yelsk'), 
 ('Lelchitsy');
 
-INSERT INTO OrgName (Name)
+INSERT INTO Organization (Name, Telefon, Email) 
 VALUES 
-('Energosbyt'), 
-('BelGUT'),
-('Distanciya_Gomel'), 
-('Distanciya_Zhlobin'), 
-('KZHREUP'),
-('Hospital'),
-('GorElectroTransport');
+('Energosbyt', 123456789, 'energosbyt@mail.com'),
+('BelGUT', 234567890, 'belgut@mail.com'),
+('Distanciya_Gomel', 345678901, 'distanciya_gomel@mail.com'),
+('Distanciya_Zhlobin', 456789012, 'distanciya_zhlobin@mail.com'),
+('KZHREUP', 567890123, 'kzhreup@mail.com'),
+('Hospital', 678901234, 'hospital@mail.com'),
+('GorElectroTransport', 789012345, 'gorelectrotransport@mail.com');
+
+--------------------------------------------------------------------------------
+
+DECLARE @startDateArenda datetime;
+SET @startDateArenda = '2026-01-01';
+DECLARE @startDatePoverka datetime;
+SET @startDatePoverka = '2015-01-01';
+
+DECLARE @i int;
+SET @i = 0;
+
+DELETE FROM [dbo].[Schetchik]
+DBCC CHECKIDENT ('Schetchik', RESEED, 0)
+DELETE FROM [dbo].[Contract]
+DBCC CHECKIDENT ('Contract', RESEED, 0)
+DELETE FROM [dbo].[Kiosk]
+DBCC CHECKIDENT ('Kiosk', RESEED, 0)
+DELETE FROM [dbo].[KioskSection]
+DBCC CHECKIDENT ('KioskSection', RESEED, 0)
+
+WHILE @i < 100
+BEGIN
+    SET @i = @i + 1;
+
+    INSERT INTO KioskSection 
+    (KioskName, AdresSection, AreaSection, Kadastr, DataResh, TypeArenda, Certificate, DateArenda) 
+    VALUES 
+    (CONCAT('Section_', @i), 'Some address', 100.00, CONCAT('Kadastr_', @i), GETDATE(), 'Type1', 'Certificate1', DATEADD(month, @i, @startDateArenda));
+
+    INSERT INTO Kiosk
+    ([Name], ModelKiosk, Arenda, TownId, Address, Area, KioskSectionId) 
+    VALUES 
+    (CONCAT('Киоск №', @i), 'Model1', DATEADD(month, @i, @startDateArenda), @i % 22 + 1, 'Some address', 100.00, SCOPE_IDENTITY());
+
+    INSERT INTO Contract
+    (OrganizationId, KioskId, Dogovor, [Limit]) 
+    VALUES 
+    (@i % 7 + 1, SCOPE_IDENTITY(), @i, 5000);
+
+    INSERT INTO Schetchik
+    (NomerSchetchika, ModelSchetchika, TexUchet, TwoTarif, Poverka, Poteri, KioskId) 
+    VALUES 
+    (CONCAT('№', @i), 'ModelSch', 1, 1, DATEADD(month, @i, @startDatePoverka), 0, SCOPE_IDENTITY());
+END;
+
+-------------------------------------------------------------------------

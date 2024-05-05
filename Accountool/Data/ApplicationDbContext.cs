@@ -40,7 +40,7 @@ namespace Accountool.Data
 
         public virtual DbSet<KioskSection> KioskSections { get; set; }
 
-        public virtual DbSet<OrgName> OrgNames { get; set; }
+        public virtual DbSet<Contract> Contracts { get; set; }
 
         public virtual DbSet<Organization> Organizations { get; set; }
 
@@ -180,18 +180,14 @@ namespace Accountool.Data
 
                 entity.ToTable("Kiosk");
 
-                entity.Property(e => e.Adress).HasMaxLength(200);
+                entity.Property(e => e.Address).HasMaxLength(200);
                 entity.Property(e => e.Arenda).HasColumnType("datetime");
                 entity.Property(e => e.ModelKiosk).HasMaxLength(200);
-                entity.Property(e => e.Nomer).HasMaxLength(200);
+                entity.Property(e => e.Name).HasMaxLength(200);
 
                 entity.HasOne(d => d.KioskSection).WithMany(p => p.Kiosks)
                     .HasForeignKey(d => d.KioskSectionId)
                     .HasConstraintName("FK_Kiosk_KioskSection");
-
-                entity.HasOne(d => d.Organization).WithMany(p => p.Kiosks)
-                    .HasForeignKey(d => d.OrganizationId)
-                    .HasConstraintName("FK_Kiosk_Organization");
 
                 entity.HasOne(d => d.Town).WithMany(p => p.Kiosks)
                     .HasForeignKey(d => d.TownId)
@@ -209,31 +205,35 @@ namespace Accountool.Data
                 entity.Property(e => e.DataResh).HasColumnType("datetime");
                 entity.Property(e => e.DateArenda).HasColumnType("datetime");
                 entity.Property(e => e.Kadastr).HasMaxLength(200);
-                entity.Property(e => e.NomerKioska).HasMaxLength(200);
+                entity.Property(e => e.KioskName).HasMaxLength(200);
                 entity.Property(e => e.TypeArenda).HasMaxLength(200);
-            });
-
-            modelBuilder.Entity<OrgName>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__OrgName__3214EC073C8B27FC");
-
-                entity.ToTable("OrgName");
-
-                entity.Property(e => e.Name).HasMaxLength(200);
             });
 
             modelBuilder.Entity<Organization>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Organiza__3214EC07EF196410");
+                entity.HasKey(e => e.Id).HasName("PK__Organiza__3214EC073C8B27FC");
 
                 entity.ToTable("Organization");
 
+                entity.Property(e => e.Name).HasMaxLength(200);
                 entity.Property(e => e.Email).HasMaxLength(200);
+            });
 
-                entity.HasOne(d => d.OrgName).WithMany(p => p.Organizations)
-                    .HasForeignKey(d => d.OrgNameId)
+            modelBuilder.Entity<Contract>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Contract__3214EC07EF196410");
+
+                entity.ToTable("Contract");
+
+                entity.HasOne(d => d.Organization).WithMany(p => p.Contracts)
+                    .HasForeignKey(d => d.OrganizationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Kiosk_OrgName");
+                    .HasConstraintName("FK_Contract_Organization");
+
+                entity.HasOne(d => d.Kiosk).WithMany(p => p.Contracts)
+                    .HasForeignKey(d => d.KioskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Contract_Kiosk");
             });
 
             modelBuilder.Entity<Schetchik>(entity =>

@@ -13,33 +13,30 @@ namespace Accountool.Models
         public int Id { get; set; }
 
         [Required]
-        public string Nomer { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         public string? ModelKiosk { get; set; }
 
         public DateTime? Arenda { get; set; }
 
-        [ForeignKey("Towns")]
-        public int? TownId { get; set; }
-
-        public string? Adress { get; set; }
+        public string? Address { get; set; }
 
         public double Area { get; set; }
 
-        [ForeignKey("Organizations")]
-        public int? OrganizationId { get; set; }
+        [ForeignKey("Towns")]
+        public int? TownId { get; set; }
 
         [ForeignKey("KioskSections")]
         public int? KioskSectionId { get; set; }
-
-        [InverseProperty("Kiosk")]
-        public virtual ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
         [InverseProperty("Kiosks")]
         public virtual KioskSection? KioskSection { get; set; }
 
         [InverseProperty("Kiosks")]
-        public virtual Organization? Organization { get; set; }
+        public virtual Town? Town { get; set; }
+
+        [InverseProperty("Kiosk")]
+        public virtual ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
         [InverseProperty("Kiosk")]
         public virtual ICollection<Schetchik> Schetchiks { get; set; } = new List<Schetchik>();
@@ -47,8 +44,8 @@ namespace Accountool.Models
         [InverseProperty("Kiosk")]
         public virtual ICollection<UserKiosk> UserKiosks { get; set; } = new List<UserKiosk>();
 
-        [InverseProperty("Kiosks")]
-        public virtual Town? Town { get; set; }
+        [InverseProperty("Kiosk")]
+        public virtual ICollection<Contract> Contracts { get; set; } = new List<Contract>();
 
         [InverseProperty("Kiosks")]
         public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
