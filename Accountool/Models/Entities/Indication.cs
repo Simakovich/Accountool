@@ -15,6 +15,9 @@ namespace Accountool.Models.Entities
         public DateTime Month { get; set; }
 
         [Required]
+        public decimal Value { get; set; }
+
+        [Required]
         public double Tarif1 { get; set; }
 
         [Required]
