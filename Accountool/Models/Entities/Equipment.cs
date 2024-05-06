@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     [Table("Equipment")]
     public partial class Equipment

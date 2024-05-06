@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     [Table("Schetchik")]
     public partial class Schetchik
@@ -30,10 +30,16 @@ namespace Accountool.Models
         [ForeignKey("Kiosk")]
         public int? KioskId { get; set; }
 
+        [ForeignKey("Schetchik")]
+        public int MeasureTypeId { get; set; }
+
         [InverseProperty("Schetchik")]
         public virtual ICollection<Indication> Indications { get; set; } = new List<Indication>();
 
         [InverseProperty("Schetchiks")]
         public virtual Kiosk? Kiosk { get; set; }
+
+        [InverseProperty("Schetchiks")]
+        public virtual MeasureType MeasureType { get; set; }
     }
 }

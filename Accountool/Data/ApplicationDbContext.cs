@@ -1,4 +1,4 @@
-﻿using Accountool.Models;
+﻿using Accountool.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +51,8 @@ namespace Accountool.Data
         public virtual DbSet<UserKiosk> UserKiosks { get; set; }
 
         public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
+
+        public virtual DbSet<MeasureType> MeasureTypes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -250,6 +252,10 @@ namespace Accountool.Data
                     .HasForeignKey(d => d.KioskId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Schetchik_Kiosk");
+                entity.HasOne(d => d.MeasureType).WithMany(p => p.Schetchiks)
+                    .HasForeignKey(d => d.MeasureTypeId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Schetchik_MeasureType");
             });
 
             modelBuilder.Entity<Town>(entity =>
@@ -257,6 +263,15 @@ namespace Accountool.Data
                 entity.HasKey(e => e.Id).HasName("PK__Town__3214EC077070A904");
 
                 entity.ToTable("Town");
+
+                entity.Property(e => e.Name).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<MeasureType>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__MeasureType__3214EC088080A803");
+
+                entity.ToTable("MeasureType");
 
                 entity.Property(e => e.Name).HasMaxLength(200);
             });

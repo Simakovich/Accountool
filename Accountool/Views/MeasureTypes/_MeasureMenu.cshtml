@@ -1,0 +1,8 @@
+﻿@model IEnumerable<Accountool.Models.Entities.MeasureType>
+
+@foreach (var item in Model)
+{
+    <p>
+        <a href=@Url.Action("GetAllIndicationsByMeasure", "Home", new { id = item.Id })>@item.Name</a>
+    </p>
+}

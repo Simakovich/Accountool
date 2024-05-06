@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     [Table("AspNetUserClaim")]
     public partial class AspNetUserClaim

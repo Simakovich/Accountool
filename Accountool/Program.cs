@@ -1,5 +1,8 @@
 using Accountool.Data;
 using Accountool.Models;
+using Accountool.Models.DataAccess;
+using Accountool.Models.Entities;
+using Accountool.Models.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +17,11 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
+builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();
+builder.Services.AddScoped<IRepository<MeasureType>, Repository<MeasureType>>();
 
 var app = builder.Build();
 

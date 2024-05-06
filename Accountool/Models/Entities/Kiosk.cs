@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     [Table("Kiosk")]
     public partial class Kiosk

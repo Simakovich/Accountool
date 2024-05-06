@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     [Table("Indication")]
-    public partial class Indication
+    public class Indication
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1,4 +1,4 @@
-namespace Accountool.Models
+namespace Accountool.Models.Entities
 {
     public class ErrorViewModel
     {

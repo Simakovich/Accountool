@@ -10,22 +10,23 @@ using Accountool.Models.Entities;
 
 namespace Accountool.Controllers
 {
-    public class TownsController : Controller
+    public class IndicationsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public TownsController(ApplicationDbContext context)
+        public IndicationsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Towns
+        // GET: Indications
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Towns.ToListAsync());
+            var applicationDbContext = _context.Indications.Include(i => i.Schetchik);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Towns/Details/5
+        // GET: Indications/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,42 @@ namespace Accountool.Controllers
                 return NotFound();
             }
 
-            var town = await _context.Towns
+            var indication = await _context.Indications
+                .Include(i => i.Schetchik)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (town == null)
+            if (indication == null)
             {
                 return NotFound();
             }
 
-            return View(town);
+            return View(indication);
         }
 
-        // GET: Towns/Create
+        // GET: Indications/Create
         public IActionResult Create()
         {
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika");
             return View();
         }
 
-        // POST: Towns/Create
+        // POST: Indications/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Town town)
+        public async Task<IActionResult> Create([Bind("Id,Month,Tarif1,Tarif2,TarifSumm,Archive,SchetchikId")] Indication indication)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(town);
+                _context.Add(indication);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(town);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            return View(indication);
         }
 
-        // GET: Towns/Edit/5
+        // GET: Indications/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +77,23 @@ namespace Accountool.Controllers
                 return NotFound();
             }
 
-            var town = await _context.Towns.FindAsync(id);
-            if (town == null)
+            var indication = await _context.Indications.FindAsync(id);
+            if (indication == null)
             {
                 return NotFound();
             }
-            return View(town);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            return View(indication);
         }
 
-        // POST: Towns/Edit/5
+        // POST: Indications/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Town town)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Month,Tarif1,Tarif2,TarifSumm,Archive,SchetchikId")] Indication indication)
         {
-            if (id != town.Id)
+            if (id != indication.Id)
             {
                 return NotFound();
             }
@@ -97,12 +102,12 @@ namespace Accountool.Controllers
             {
                 try
                 {
-                    _context.Update(town);
+                    _context.Update(indication);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TownExists(town.Id))
+                    if (!IndicationExists(indication.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +118,11 @@ namespace Accountool.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(town);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            return View(indication);
         }
 
-        // GET: Towns/Delete/5
+        // GET: Indications/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +130,35 @@ namespace Accountool.Controllers
                 return NotFound();
             }
 
-            var town = await _context.Towns
+            var indication = await _context.Indications
+                .Include(i => i.Schetchik)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (town == null)
+            if (indication == null)
             {
                 return NotFound();
             }
 
-            return View(town);
+            return View(indication);
         }
 
-        // POST: Towns/Delete/5
+        // POST: Indications/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var town = await _context.Towns.FindAsync(id);
-            if (town != null)
+            var indication = await _context.Indications.FindAsync(id);
+            if (indication != null)
             {
-                _context.Towns.Remove(town);
+                _context.Indications.Remove(indication);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TownExists(int id)
+        private bool IndicationExists(int id)
         {
-            return _context.Towns.Any(e => e.Id == id);
+            return _context.Indications.Any(e => e.Id == id);
         }
     }
 }

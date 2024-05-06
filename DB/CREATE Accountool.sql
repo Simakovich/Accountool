@@ -336,8 +336,12 @@ CREATE TABLE Schetchik
     Poverka DATETIME NULL,
     Poteri INT NOT NULL,
     KioskId INT NULL,
+    MeasureTypeId INT NOT NULL,
     CONSTRAINT FK_Schetchik_Kiosk FOREIGN KEY (KioskId)
-        REFERENCES Kiosk(Id)
+        REFERENCES Kiosk(Id),
+        ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT FK_Schetchik_MeasureType FOREIGN KEY (MeasureTypeId)
+        REFERENCES MeasureType(Id),
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -369,6 +373,22 @@ CREATE TABLE UserKiosk
         ON DELETE CASCADE
 );
 
+CREATE TABLE MeasureType
+(
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(200) NOT NULL
+);
+
+DELETE FROM [dbo].[MeasureType]
+INSERT INTO MeasureType (Name)
+VALUES 
+('Elektrika'), 
+('Water'), 
+('Gas'), 
+('Heating'), 
+('Waste Water');
+
+DELETE FROM [dbo].[Town]
 INSERT INTO Town (Name)
 VALUES 
 ('Gomel'), 
@@ -394,6 +414,7 @@ VALUES
 ('Yelsk'), 
 ('Lelchitsy');
 
+DELETE FROM [dbo].[Organization]
 INSERT INTO Organization (Name, Telefon, Email) 
 VALUES 
 ('Energosbyt', 123456789, 'energosbyt@mail.com'),
@@ -443,9 +464,9 @@ BEGIN
     (@i % 7 + 1, SCOPE_IDENTITY(), @i, 5000);
 
     INSERT INTO Schetchik
-    (NomerSchetchika, ModelSchetchika, TexUchet, TwoTarif, Poverka, Poteri, KioskId) 
+    (NomerSchetchika, ModelSchetchika, TexUchet, TwoTarif, Poverka, Poteri, KioskId, MeasureTypeId) 
     VALUES 
-    (CONCAT('№', @i), 'ModelSch', 1, 1, DATEADD(month, @i, @startDatePoverka), 0, SCOPE_IDENTITY());
+    (CONCAT('№', @i), 'ModelSch', 1, 1, DATEADD(month, @i, @startDatePoverka), 0, SCOPE_IDENTITY(), 1);
 END;
 
 -------------------------------------------------------------------------

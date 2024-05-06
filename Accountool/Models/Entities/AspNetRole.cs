@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Accountool.Models;
+namespace Accountool.Models.Entities;
 
 [Table("AspNetRole")]
 public partial class AspNetRole
@@ -26,7 +26,7 @@ public partial class AspNetRole
 
     [InverseProperty("Roles")]
     public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
-    
+
     [InverseProperty("Role")]
     public virtual ICollection<AspNetUserRole> UserRoles { get; set; } = new List<AspNetUserRole>();
 }
