@@ -1,67 +1,55 @@
-﻿@model IEnumerable<Accountool.Models.Entities.Indication>
+﻿@model IEnumerable<Accountool.Models.Models.FullIndicationModel>
 
-<h1>@ViewBag.TitleMeasureType</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Month)
+                @Html.DisplayNameFor(model => model.KioskName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Value)
+                @Html.DisplayNameFor(model => model.TownName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tarif1)
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tarif2)
+                @Html.DisplayNameFor(model => model.Indication.Month)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TarifSumm)
+                @Html.DisplayNameFor(model => model.Indication.Tarif1)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Archive)
+                @Html.DisplayNameFor(model => model.Indication.Value)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Schetchik)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Month)
+                @Html.DisplayFor(modelItem => item.KioskName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Value)
+                @Html.DisplayFor(model => item.TownName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Tarif1)
+                @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Tarif2)
+                @Html.DisplayFor(modelItem => item.Indication.Month)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TarifSumm)
+                @Html.DisplayFor(modelItem => item.Indication.Tarif1)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Archive)
+                @Html.DisplayFor(modelItem => item.Indication.Value)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Schetchik.ModelSchetchika)
+                    <input type="hidden" name="MeasureTypeId" value="@Model.FirstOrDefault()?.MeasureTypeId" />
+                <a asp-controller="Indications" asp-action="Edit" asp-route-id="@item.Indication.Id">Edit</a> |
+                <a asp-controller="Indications" asp-action="Details" asp-route-id="@item.Indication.Id">Details</a> |
+                <a asp-controller="Indications" asp-action="Delete" asp-route-id="@item.Indication.Id">Delete</a>
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        </tr>}
     </tbody>
 </table>

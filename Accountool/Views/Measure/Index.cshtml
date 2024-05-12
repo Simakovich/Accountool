@@ -1,0 +1,147 @@
+﻿@model Accountool.Models.ViewModel.MeasureWithIndication
+
+<main role="main" class="pb-3">
+   <div id="spinner" style="display: none;">
+        <img src="D:\Univer\Diplom\Accountool\Accountool\wwwroot\icons8-спиннер.gif" alt="Loading..." />
+   </div>
+    <div class="row border border-primary border-right shadow box-shadow">
+        <div class="col-md-3">
+            @if (@Model.TitleMeasureTypeName != null){<h1>@Model.TitleMeasureTypeName</h1>}
+
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-3">
+                    Average value:
+                </div>
+                <div class="col-md-3">
+                    @Model.Indications.Average(x => x.Indication.Value).ToString("0.00")
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-4 border border-primary border-right shadow box-shadow d-flex justify-content-center align-items-center">
+            <a asp-action="Create">Create New</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form method="get" asp-action="GetAllIndicationsByMeasure" asp-controller="Home">
+                <input type="hidden" asp-for="@Model.TitleMeasureTypeId" />
+                <div class="form-row align-items-center">
+                    <div class="row">
+                        <div class="col-md-3 border border-primary border-right shadow box-shadow">
+                            <div class="row">
+                                <label class="sr-only col-md-12 text-center">Place</label>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <select class="form-control col-md-4" asp-for="SelectedPlace" asp-items="Model.Places"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 border border-primary border-right shadow box-shadow">
+                            <div class="row">
+                                <label class="sr-only col-md-12 text-center">Month</label>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-2">
+                                    <label class="sr-only col-md-2" for="SelectedStartMonth">from</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control col-md-4" asp-for="SelectedStartMonth" asp-items="Model.Months"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="sr-only col-md-2" for="SelectedLastMonth">to</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control col-md-4" asp-for="SelectedLastMonth" asp-items="Model.Months"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 border border-primary border-right shadow box-shadow">
+                            <div class="row">
+                                <label class="sr-only col-md-12 text-center">Year</label>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-2">
+                                    <label class="sr-only col-md-2" for="SelectedStartYear">from</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control col-md-4" asp-for="SelectedStartYear" asp-items="Model.Years"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="sr-only col-md-2" for="SelectedLastYear">to</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control col-md-4" asp-for="SelectedLastYear" asp-items="Model.Years"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 border border-primary border-right shadow box-shadow">
+                            <div class="row">
+                                <label class="sr-only col-md-12 text-center">Town</label>
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-12">
+                                    <select class="form-control col-md-4" asp-for="SelectTown" asp-items="Model.Towns"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 border border-primary border-right shadow box-shadow d-flex justify-content-center align-items-center">
+                            <button id="spinBtn" type="submit" class="btn btn-primary mb-2">Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+        </div>
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+            Page @(Model.Indications.PageIndex) of @(Model.Indications.TotalPages)
+        </div>
+        <div class="col-md-1 d-flex justify-content-center align-items-center">
+            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.Indications.PageIndex - 1 })">Previous</a>
+        </div>
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.Indications.PageIndex + 1 })">Next</a>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-center align-items-center">
+            @Html.Partial("./../Indications/Index", Model.Indications)
+        </div>
+    </div>
+</main>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#spinBtn").click(function () {
+            // Показать спиннер
+            $("#loader").show();
+
+            // Отправить AJAX-запрос
+            $.ajax({
+                url: '/Home/GetAllIndicationsByMeasure', // URL контроллера и действия
+                type: 'GET', // Тип запроса
+                success: function (result) {
+                    // Если запрос успешно обработан, вставить ответ в контейнер
+                    $("#content").html(result);
+                },
+                error: function () {
+                    // Если произошла ошибка, можно показать сообщение об ошибке
+                    $("#content").html('<p>Произошла ошибка при загрузке содержимого.</p>');
+                },
+                complete: function () {
+                    // Когда запрос завершен (не важно, успешно или с ошибкой), скрыть спиннер
+                    $("#loader").hide();
+                }
+            });
+        });
+    });
+</script>

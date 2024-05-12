@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using Accountool.Models.Entities;
 using Accountool.Models.DataAccess;
 using Accountool.Models.ViewModel;
+using System.Data;
+using Accountool.Models.Models;
+using Humanizer;
+using System;
 
 namespace Accountool.Models.Services
 {
@@ -15,25 +19,34 @@ namespace Accountool.Models.Services
         Task Update(Indication entity);
         Task Remove(int id);
         Task<IEnumerable<Indication>> GetForSchetchik(int SchetchikId);
-        Task<IEnumerable<Indication>> GetByMeasureId(int id);
+        Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(int measureTypeid, int? townId = null, int? kioskId = null, int? monthFrom = null, int? monthTo = null, int? yearFrom = null, int? yearTo = null);
         Task<IEnumerable<MeasureType>> GetAllMeasureTypes();
         Task<IEnumerable<Indication>> GetAllIndications();
+        Task<FirstLastYearModel> GetMinMaxYear(int measureTypeid);
+        Task<IEnumerable<IdNameModel>> GetPlaces(int measureTypeid);
+        Task<IEnumerable<IdNameModel>> GetTowns(int measureTypeid);
     }
 
     public class MeasurementService : IMeasurementService
     {
         private readonly IRepository<Indication> _indications;
         private readonly IRepository<Schetchik> _schetchiks;
+        private readonly IRepository<Kiosk> _kiosk;
+        private readonly IRepository<Town> _town;
         private readonly IRepository<MeasureType> _measureTypes;
 
         public MeasurementService(
              IRepository<Indication> indications,
              IRepository<Schetchik> schetchiks,
-             IRepository<MeasureType> measureTypes)
+             IRepository<Kiosk> kiosk,
+             IRepository<Town> town,
+        IRepository<MeasureType> measureTypes)
         {
             _indications = indications;
             _schetchiks = schetchiks;
             _measureTypes = measureTypes;
+            _kiosk = kiosk;
+            _town = town;
         }
 
         public async Task<IEnumerable<Indication>> GetAllIndications()
@@ -47,14 +60,101 @@ namespace Accountool.Models.Services
         }
 
 
-        public async Task<IEnumerable<Indication>> GetByMeasureId(int id)
+        public async Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(
+            int measureTypeid,
+            int? townId = null,
+            int? kioskId = null,
+            int? monthFrom = null,
+            int? monthTo = null,
+            int? yearFrom = null,
+            int? yearTo = null)
         {
-            var indications = (from mt in _measureTypes.GetAll()
-                               join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
-                               join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                               where mt.Id == id
-                               select i).ToList();
-            return indications;
+            var indications = from mt in _measureTypes.GetAll()
+                              join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
+                              join i in _indications.GetAll() on s.Id equals i.SchetchikId
+                              join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                              join t in _town.GetAll() on k.TownId equals t.Id
+                              where mt.Id == measureTypeid
+                              && (kioskId == null || k.Id == kioskId)
+                              && (townId == null || k.TownId == townId)
+                              select new { i, k, t };
+
+            if (monthFrom != null)
+            {
+                indications = indications.Where(x => x.i.Month.Month >= monthFrom);
+            }
+
+            if (monthTo != null)
+            {
+                indications = indications.Where(x => x.i.Month.Month <= monthTo);
+            }
+
+            if (yearFrom != null)
+            {
+                indications = indications.Where(x => x.i.Month.Year >= yearFrom);
+            }
+
+            if (yearTo != null)
+            {
+                indications = indications.Where(x => x.i.Month.Year <= yearTo);
+            }
+
+            return indications.Select(x => new FullIndicationModel()
+            {
+                KioskId = x.k.Id,
+                KioskName = x.k.Name,
+                Address = x.k.Address,
+                TownName = x.t.Name,
+                Indication = x.i
+            });
+        }
+
+        public async Task<FirstLastYearModel> GetMinMaxYear(
+            int measureTypeid)
+        {
+            var minMaxDate = from mt in _measureTypes.GetAll()
+                              join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
+                              join i in _indications.GetAll() on s.Id equals i.SchetchikId
+                              where mt.Id == measureTypeid
+                              select i.Month;
+            if (minMaxDate != null && minMaxDate.Any())
+            {
+                var minMaxDateTime = new FirstLastYearModel
+                {
+                    FirstDate = minMaxDate.Min(),
+                    LastDate = minMaxDate.Max()
+                };
+                return minMaxDateTime;
+            }
+
+            return null;
+        }
+
+        public async Task<IEnumerable<IdNameModel>> GetPlaces(
+            int measureTypeid)
+        {
+            var places = from mt in _measureTypes.GetAll()
+                         join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
+                         join i in _indications.GetAll() on s.Id equals i.SchetchikId
+                         join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                         where mt.Id == measureTypeid
+                         select new IdNameModel { Id = k.Id, Name = k.Name };
+
+            return places;
+        }
+
+        public async Task<IEnumerable<IdNameModel>> GetTowns(
+            int measureTypeid)
+        {
+            var townsId = from mt in _measureTypes.GetAll()
+                         join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
+                         join i in _indications.GetAll() on s.Id equals i.SchetchikId
+                         join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                         join t in _town.GetAll() on k.TownId equals t.Id
+                         where mt.Id == measureTypeid
+                         select new IdNameModel { Id = t.Id, Name = t.Name };
+
+            return townsId;
         }
 
         public async Task<Indication> GetById(int id)

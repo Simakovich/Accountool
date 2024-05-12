@@ -21,7 +21,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();
+builder.Services.AddScoped<IRepository<Kiosk>, Repository<Kiosk>>();
+builder.Services.AddScoped<IRepository<Town>, Repository<Town>>();
 builder.Services.AddScoped<IRepository<MeasureType>, Repository<MeasureType>>();
+
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//        .AddEntityFrameworkStores<ApplicationDbContext>()
+//        .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -48,5 +54,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+//var roleManager = app.Services.GetRequiredService<RoleManager<IdentityRole>>();
+//string[] roles = new string[] { "Admin", "User" };
+//foreach (var role in roles)
+//{
+//    if (!await roleManager.RoleExistsAsync(role))
+//    {
+//        await roleManager.CreateAsync(new IdentityRole(role));
+//    }
+//}
 
 app.Run();

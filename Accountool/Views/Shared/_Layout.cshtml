@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Accountool</title>
+    <title class="bg-primary">@ViewData["Title"] - Accountool</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Accountool.styles.css" asp-append-version="true" />
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-primary">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Accountool</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="true" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -22,16 +22,35 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Create and change data
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Indications" asp-action="Index">Indications</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="MeasureTypes" asp-action="Index">MeasureTypes</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="Towns" asp-action="Index">Towns</a>
+                            </div>
                         </li>
                     </ul>
+                    <a class="navbar-brand mx-auto text-white" asp-area="" asp-controller="Home" asp-action="Index">Name of your company</a>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    @RenderBody()
+
+    <div id="content"></div> <!-- Сюда будет загружен ответ от сервера -->
+
+    <div id="loader" style="display: none;">
+        <img src="D:\Univer\Diplom\Accountool\Accountool\wwwroot\icons8-спиннер.gif" alt="Loading..." />
+    </div>
+
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - Accountool - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -43,3 +62,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -7,23 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Accountool.Data;
 using Accountool.Models.Entities;
+using Accountool.Models.Models;
+using System.Diagnostics.Metrics;
+using Accountool.Models.Services;
 
 namespace Accountool.Controllers
 {
     public class IndicationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMeasurementService _measurementService;
 
-        public IndicationsController(ApplicationDbContext context)
+        public IndicationsController(
+            ApplicationDbContext context,
+            IMeasurementService measurementService)
         {
             _context = context;
+            _measurementService = measurementService;
         }
 
         // GET: Indications
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int MeasureTypeId)
         {
-            var applicationDbContext = _context.Indications.Include(i => i.Schetchik);
-            return View(await applicationDbContext.ToListAsync());
+            var datas = await _measurementService.GetFilteredMeasures(MeasureTypeId);
+            return View(datas);
         }
 
         // GET: Indications/Details/5
@@ -82,7 +89,7 @@ namespace Accountool.Controllers
             {
                 return NotFound();
             }
-            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks.Distinct(), "Id", "ModelSchetchika", indication.SchetchikId);
             return View(indication);
         }
 

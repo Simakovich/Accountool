@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Accountool.Data;
 using Accountool.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Accountool.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TownsController : Controller
     {
         private readonly ApplicationDbContext _context;

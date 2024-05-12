@@ -451,12 +451,12 @@ BEGIN
     INSERT INTO KioskSection 
     (KioskName, AdresSection, AreaSection, Kadastr, DataResh, TypeArenda, Certificate, DateArenda) 
     VALUES 
-    (CONCAT('Section_', @i), 'Some address', 100.00, CONCAT('Kadastr_', @i), GETDATE(), 'Type1', 'Certificate1', DATEADD(month, @i, @startDateArenda));
+    (CONCAT('Section_', @i),  CONCAT('st. Lenina, ', @i), 100.00, CONCAT('Kadastr_', @i), GETDATE(), 'Type1', 'Certificate1', DATEADD(month, @i, @startDateArenda));
 
     INSERT INTO Kiosk
     ([Name], ModelKiosk, Arenda, TownId, Address, Area, KioskSectionId) 
     VALUES 
-    (CONCAT('Киоск №', @i), 'Model1', DATEADD(month, @i, @startDateArenda), @i % 22 + 1, 'Some address', 100.00, SCOPE_IDENTITY());
+    (CONCAT('Киоск №', @i), 'Model1', DATEADD(month, @i, @startDateArenda), @i % 22 + 1, CONCAT('st. Lenina, ', @i), 100.00, SCOPE_IDENTITY());
 
     INSERT INTO Contract
     (OrganizationId, KioskId, Dogovor, [Limit]) 
