@@ -21,7 +21,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();
-builder.Services.AddScoped<IRepository<Kiosk>, Repository<Kiosk>>();
+builder.Services.AddScoped<IRepository<Place>, Repository<Place>>();
 builder.Services.AddScoped<IRepository<Town>, Repository<Town>>();
 builder.Services.AddScoped<IRepository<MeasureType>, Repository<MeasureType>>();
 

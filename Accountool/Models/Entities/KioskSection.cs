@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace Accountool.Models.Entities
 {
-    [Table("KioskSection")]
-    public partial class KioskSection
+    [Table("PlaceSection")]
+    public partial class PlaceSection
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
-        public string KioskName { get; set; } = null!;
+        public string PlaceName { get; set; } = null!;
 
         [Required]
         public virtual string AdresSection { get; set; } = null!;
@@ -35,7 +35,7 @@ namespace Accountool.Models.Entities
         [Required]
         public DateTime DateArenda { get; set; }
 
-        [InverseProperty("KioskSection")]
-        public virtual ICollection<Kiosk> Kiosks { get; set; } = new List<Kiosk>();
+        [InverseProperty("PlaceSection")]
+        public virtual ICollection<Place> Places { get; set; } = new List<Place>();
     }
 }

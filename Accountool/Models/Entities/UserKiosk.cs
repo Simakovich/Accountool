@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Accountool.Models.Entities
 {
-    public class UserKiosk
+    public class UserPlace
     {
         [ForeignKey("User")]
         public string UserId { get; set; }
 
-        [ForeignKey("Kiosk")]
-        public int KioskId { get; set; }
+        [ForeignKey("Place")]
+        public int PlaceId { get; set; }
 
         public virtual AspNetUser User { get; set; }
-        public virtual Kiosk Kiosk { get; set; }
+        public virtual Place Place { get; set; }
     }
 }

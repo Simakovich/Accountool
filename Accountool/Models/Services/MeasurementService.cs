@@ -19,7 +19,7 @@ namespace Accountool.Models.Services
         Task Update(Indication entity);
         Task Remove(int id);
         Task<IEnumerable<Indication>> GetForSchetchik(int SchetchikId);
-        Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(int measureTypeid, int? townId = null, int? kioskId = null, int? monthFrom = null, int? monthTo = null, int? yearFrom = null, int? yearTo = null);
+        Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(int measureTypeid, int? townId = null, int? placeId = null, int? monthFrom = null, int? monthTo = null, int? yearFrom = null, int? yearTo = null);
         Task<IEnumerable<MeasureType>> GetAllMeasureTypes();
         Task<IEnumerable<Indication>> GetAllIndications();
         Task<FirstLastYearModel> GetMinMaxYear(int measureTypeid);
@@ -31,21 +31,21 @@ namespace Accountool.Models.Services
     {
         private readonly IRepository<Indication> _indications;
         private readonly IRepository<Schetchik> _schetchiks;
-        private readonly IRepository<Kiosk> _kiosk;
+        private readonly IRepository<Place> _place;
         private readonly IRepository<Town> _town;
         private readonly IRepository<MeasureType> _measureTypes;
 
         public MeasurementService(
              IRepository<Indication> indications,
              IRepository<Schetchik> schetchiks,
-             IRepository<Kiosk> kiosk,
+             IRepository<Place> place,
              IRepository<Town> town,
         IRepository<MeasureType> measureTypes)
         {
             _indications = indications;
             _schetchiks = schetchiks;
             _measureTypes = measureTypes;
-            _kiosk = kiosk;
+            _place = place;
             _town = town;
         }
 
@@ -63,7 +63,7 @@ namespace Accountool.Models.Services
         public async Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(
             int measureTypeid,
             int? townId = null,
-            int? kioskId = null,
+            int? placeId = null,
             int? monthFrom = null,
             int? monthTo = null,
             int? yearFrom = null,
@@ -72,10 +72,10 @@ namespace Accountool.Models.Services
             var indications = from mt in _measureTypes.GetAll()
                               join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                               join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                              join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                              join k in _place.GetAll() on s.PlaceId equals k.Id
                               join t in _town.GetAll() on k.TownId equals t.Id
                               where mt.Id == measureTypeid
-                              && (kioskId == null || k.Id == kioskId)
+                              && (placeId == null || k.Id == placeId)
                               && (townId == null || k.TownId == townId)
                               select new { i, k, t };
 
@@ -101,8 +101,8 @@ namespace Accountool.Models.Services
 
             return indications.Select(x => new FullIndicationModel()
             {
-                KioskId = x.k.Id,
-                KioskName = x.k.Name,
+                PlaceId = x.k.Id,
+                PlaceName = x.k.Name,
                 Address = x.k.Address,
                 TownName = x.t.Name,
                 Indication = x.i
@@ -136,7 +136,7 @@ namespace Accountool.Models.Services
             var places = from mt in _measureTypes.GetAll()
                          join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                          join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                         join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                         join k in _place.GetAll() on s.PlaceId equals k.Id
                          where mt.Id == measureTypeid
                          select new IdNameModel { Id = k.Id, Name = k.Name };
 
@@ -149,7 +149,7 @@ namespace Accountool.Models.Services
             var townsId = from mt in _measureTypes.GetAll()
                          join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                          join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                         join k in _kiosk.GetAll() on s.KioskId equals k.Id
+                         join k in _place.GetAll() on s.PlaceId equals k.Id
                          join t in _town.GetAll() on k.TownId equals t.Id
                          where mt.Id == measureTypeid
                          select new IdNameModel { Id = t.Id, Name = t.Name };

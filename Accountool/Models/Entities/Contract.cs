@@ -17,8 +17,8 @@ namespace Accountool.Models.Entities
         public int OrganizationId { get; set; }
 
         [Required]
-        [ForeignKey("Kiosk")]
-        public int KioskId { get; set; }
+        [ForeignKey("Place")]
+        public int PlaceId { get; set; }
 
         [Required]
         public int Dogovor { get; set; }
@@ -27,7 +27,7 @@ namespace Accountool.Models.Entities
         public int Limit { get; set; }
 
         [InverseProperty("Contracts")]
-        public virtual Kiosk Kiosk { get; set; } = null!;
+        public virtual Place Place { get; set; } = null!;
 
         [InverseProperty("Contracts")]
         public virtual Organization Organization { get; set; } = null!;

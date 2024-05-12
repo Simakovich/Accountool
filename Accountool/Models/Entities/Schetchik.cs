@@ -27,8 +27,8 @@ namespace Accountool.Models.Entities
         [Required]
         public int Poteri { get; set; }
 
-        [ForeignKey("Kiosk")]
-        public int? KioskId { get; set; }
+        [ForeignKey("Place")]
+        public int? PlaceId { get; set; }
 
         [ForeignKey("Schetchik")]
         public int MeasureTypeId { get; set; }
@@ -37,7 +37,7 @@ namespace Accountool.Models.Entities
         public virtual ICollection<Indication> Indications { get; set; } = new List<Indication>();
 
         [InverseProperty("Schetchiks")]
-        public virtual Kiosk? Kiosk { get; set; }
+        public virtual Place? Place { get; set; }
 
         [InverseProperty("Schetchiks")]
         public virtual MeasureType MeasureType { get; set; }

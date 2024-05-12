@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 namespace Accountool.Models.Entities
 {
-    [Table("Kiosk")]
-    public partial class Kiosk
+    [Table("Place")]
+    public partial class Place
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,7 +15,7 @@ namespace Accountool.Models.Entities
         [Required]
         public string Name { get; set; } = null!;
 
-        public string? ModelKiosk { get; set; }
+        public string? ModelPlace { get; set; }
 
         public DateTime? Arenda { get; set; }
 
@@ -26,28 +26,28 @@ namespace Accountool.Models.Entities
         [ForeignKey("Towns")]
         public int? TownId { get; set; }
 
-        [ForeignKey("KioskSections")]
-        public int? KioskSectionId { get; set; }
+        [ForeignKey("PlaceSections")]
+        public int? PlaceSectionId { get; set; }
 
-        [InverseProperty("Kiosks")]
-        public virtual KioskSection? KioskSection { get; set; }
+        [InverseProperty("Places")]
+        public virtual PlaceSection? PlaceSection { get; set; }
 
-        [InverseProperty("Kiosks")]
+        [InverseProperty("Places")]
         public virtual Town? Town { get; set; }
 
-        [InverseProperty("Kiosk")]
+        [InverseProperty("Place")]
         public virtual ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
 
-        [InverseProperty("Kiosk")]
+        [InverseProperty("Place")]
         public virtual ICollection<Schetchik> Schetchiks { get; set; } = new List<Schetchik>();
 
-        [InverseProperty("Kiosk")]
-        public virtual ICollection<UserKiosk> UserKiosks { get; set; } = new List<UserKiosk>();
+        [InverseProperty("Place")]
+        public virtual ICollection<UserPlace> UserPlaces { get; set; } = new List<UserPlace>();
 
-        [InverseProperty("Kiosk")]
+        [InverseProperty("Place")]
         public virtual ICollection<Contract> Contracts { get; set; } = new List<Contract>();
 
-        [InverseProperty("Kiosks")]
+        [InverseProperty("Places")]
         public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
     }
 }

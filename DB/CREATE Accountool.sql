@@ -263,10 +263,10 @@ CREATE TABLE Town
     Name NVARCHAR(200) NOT NULL
 );
 
-CREATE TABLE KioskSection
+CREATE TABLE PlaceSection
 (
     Id INT PRIMARY KEY IDENTITY,
-    KioskName NVARCHAR(200) NOT NULL,
+    PlaceName NVARCHAR(200) NOT NULL,
     AdresSection NVARCHAR(200) NOT NULL,
     AreaSection FLOAT NOT NULL,
     Kadastr NVARCHAR(200) NOT NULL,
@@ -284,35 +284,35 @@ CREATE TABLE Organization
     Email NVARCHAR(200) NULL,
 );
 
-CREATE TABLE Kiosk
+CREATE TABLE Place
 (
     Id INT PRIMARY KEY IDENTITY,
     [Name] NVARCHAR(200) NOT NULL,
-    ModelKiosk NVARCHAR(200) NULL,
+    ModelPlace NVARCHAR(200) NULL,
     Arenda DATETIME NULL,
     TownId INT NULL,
     Address NVARCHAR(200) NULL,
     Area FLOAT NOT NULL,
-    KioskSectionId INT NULL,
+    PlaceSectionId INT NULL,
 
-    CONSTRAINT FK_Kiosk_Town FOREIGN KEY (TownId)
+    CONSTRAINT FK_Place_Town FOREIGN KEY (TownId)
         REFERENCES Town (Id),
 
-    CONSTRAINT FK_Kiosk_KioskSection FOREIGN KEY (KioskSectionId)
-        REFERENCES KioskSection (Id)
+    CONSTRAINT FK_Place_PlaceSection FOREIGN KEY (PlaceSectionId)
+        REFERENCES PlaceSection (Id)
 );
 
 CREATE TABLE Contract
 (
     Id INT PRIMARY KEY IDENTITY,
     OrganizationId INT NOT NULL,
-    KioskId INT NOT NULL,
+    PlaceId INT NOT NULL,
     Dogovor INT NOT NULL,
     [Limit] INT NOT NULL,
     CONSTRAINT FK_Contract_Organization FOREIGN KEY (OrganizationId)
         REFERENCES Organization (Id),
-    CONSTRAINT FK_Contract_Kiosk FOREIGN KEY (KioskId)
-        REFERENCES Kiosk (Id)
+    CONSTRAINT FK_Contract_Place FOREIGN KEY (PlaceId)
+        REFERENCES Place (Id)
 );
 
 CREATE TABLE Equipment
@@ -321,9 +321,15 @@ CREATE TABLE Equipment
     ModelEq NVARCHAR(200) NOT NULL,
     Description NVARCHAR(MAX) NOT NULL,
     PowerEq INT NOT NULL,
-    KioskId INT NOT NULL
-    CONSTRAINT FK_Equipment_Kiosk FOREIGN KEY (KioskId)
-        REFERENCES Kiosk (Id)
+    PlaceId INT NOT NULL
+    CONSTRAINT FK_Equipment_Place FOREIGN KEY (PlaceId)
+        REFERENCES Place (Id)
+);
+
+CREATE TABLE MeasureType
+(
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(200) NOT NULL
 );
 
 CREATE TABLE Schetchik
@@ -335,13 +341,13 @@ CREATE TABLE Schetchik
     TwoTarif BIT NOT NULL,
     Poverka DATETIME NULL,
     Poteri INT NOT NULL,
-    KioskId INT NULL,
+    PlaceId INT NULL,
     MeasureTypeId INT NOT NULL,
-    CONSTRAINT FK_Schetchik_Kiosk FOREIGN KEY (KioskId)
-        REFERENCES Kiosk(Id),
-        ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT FK_Schetchik_Place FOREIGN KEY (PlaceId)
+        REFERENCES Place(Id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT FK_Schetchik_MeasureType FOREIGN KEY (MeasureTypeId)
-        REFERENCES MeasureType(Id),
+        REFERENCES MeasureType(Id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -360,24 +366,19 @@ CREATE TABLE Indication
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE UserKiosk
+CREATE TABLE UserPlace
 (
     UserId NVARCHAR(450),
-    KioskId INT,
-    PRIMARY KEY (UserId, KioskId),
-    CONSTRAINT FK_UserKiosks_AspNetUsers FOREIGN KEY (UserId)
+    PlaceId INT,
+    PRIMARY KEY (UserId, PlaceId),
+    CONSTRAINT FK_UserPlaces_AspNetUsers FOREIGN KEY (UserId)
         REFERENCES AspNetUsers (Id) 
         ON DELETE CASCADE, 
-    CONSTRAINT FK_UserKiosks_Kiosks FOREIGN KEY (KioskId)
-        REFERENCES Kiosk (Id)
+    CONSTRAINT FK_UserPlaces_Places FOREIGN KEY (PlaceId)
+        REFERENCES Place (Id)
         ON DELETE CASCADE
 );
 
-CREATE TABLE MeasureType
-(
-    Id INT PRIMARY KEY IDENTITY,
-    Name NVARCHAR(200) NOT NULL
-);
 
 DELETE FROM [dbo].[MeasureType]
 INSERT INTO MeasureType (Name)
@@ -439,32 +440,32 @@ DELETE FROM [dbo].[Schetchik]
 DBCC CHECKIDENT ('Schetchik', RESEED, 0)
 DELETE FROM [dbo].[Contract]
 DBCC CHECKIDENT ('Contract', RESEED, 0)
-DELETE FROM [dbo].[Kiosk]
-DBCC CHECKIDENT ('Kiosk', RESEED, 0)
-DELETE FROM [dbo].[KioskSection]
-DBCC CHECKIDENT ('KioskSection', RESEED, 0)
+DELETE FROM [dbo].[Place]
+DBCC CHECKIDENT ('Place', RESEED, 0)
+DELETE FROM [dbo].[PlaceSection]
+DBCC CHECKIDENT ('PlaceSection', RESEED, 0)
 
 WHILE @i < 100
 BEGIN
     SET @i = @i + 1;
 
-    INSERT INTO KioskSection 
-    (KioskName, AdresSection, AreaSection, Kadastr, DataResh, TypeArenda, Certificate, DateArenda) 
+    INSERT INTO PlaceSection 
+    (PlaceName, AdresSection, AreaSection, Kadastr, DataResh, TypeArenda, Certificate, DateArenda) 
     VALUES 
     (CONCAT('Section_', @i),  CONCAT('st. Lenina, ', @i), 100.00, CONCAT('Kadastr_', @i), GETDATE(), 'Type1', 'Certificate1', DATEADD(month, @i, @startDateArenda));
 
-    INSERT INTO Kiosk
-    ([Name], ModelKiosk, Arenda, TownId, Address, Area, KioskSectionId) 
+    INSERT INTO Place
+    ([Name], ModelPlace, Arenda, TownId, Address, Area, PlaceSectionId) 
     VALUES 
-    (CONCAT('Киоск №', @i), 'Model1', DATEADD(month, @i, @startDateArenda), @i % 22 + 1, CONCAT('st. Lenina, ', @i), 100.00, SCOPE_IDENTITY());
+    (CONCAT('Place №', @i), 'Model1', DATEADD(month, @i, @startDateArenda), @i % 22 + 1, CONCAT('st. Lenina, ', @i), 100.00, SCOPE_IDENTITY());
 
     INSERT INTO Contract
-    (OrganizationId, KioskId, Dogovor, [Limit]) 
+    (OrganizationId, PlaceId, Dogovor, [Limit]) 
     VALUES 
     (@i % 7 + 1, SCOPE_IDENTITY(), @i, 5000);
 
     INSERT INTO Schetchik
-    (NomerSchetchika, ModelSchetchika, TexUchet, TwoTarif, Poverka, Poteri, KioskId, MeasureTypeId) 
+    (NomerSchetchika, ModelSchetchika, TexUchet, TwoTarif, Poverka, Poteri, PlaceId, MeasureTypeId) 
     VALUES 
     (CONCAT('№', @i), 'ModelSch', 1, 1, DATEADD(month, @i, @startDatePoverka), 0, SCOPE_IDENTITY(), 1);
 END;

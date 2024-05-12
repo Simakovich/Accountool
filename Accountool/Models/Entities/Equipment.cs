@@ -20,10 +20,10 @@ namespace Accountool.Models.Entities
         public int PowerEq { get; set; }
 
         [Required]
-        [ForeignKey("Kiosks")]
-        public int KioskId { get; set; }
+        [ForeignKey("Places")]
+        public int PlaceId { get; set; }
 
         [InverseProperty("Equipments")]
-        public virtual Kiosk Kiosk { get; set; } = null!;
+        public virtual Place Place { get; set; } = null!;
     }
 }

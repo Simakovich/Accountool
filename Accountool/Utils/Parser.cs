@@ -18,7 +18,7 @@ namespace Accountool.Utils
 
             // Базовый SQL запрос
             string queryTemplate = "INSERT INTO Indication (Month, Value, Tarif1, Tarif2, TarifSumm, Archive, SchetchikId) VALUES "
-                                 + "('{0}', {1}, 0.2537, 0.3216, 0.5, 0, (SELECT Id FROM Kiosk WHERE Name = 'Киоск №{2}'))";
+                                 + "('{0}', {1}, 0.2537, 0.3216, 0.5, 0, (SELECT Id FROM Place WHERE Name = 'Киоск №{2}'))";
 
             StringBuilder sqlQueries = new StringBuilder();
 
@@ -28,7 +28,7 @@ namespace Accountool.Utils
                 string[] parts = lines[i].Split("\t");
 
                 // Название киоска
-                string kioskName = parts[0].Replace("Киоск№", "");
+                string placeName = parts[0].Replace("Киоск№", "");
 
                 for (int j = 1; j < parts.Length; j++)
                 {
@@ -39,7 +39,7 @@ namespace Accountool.Utils
                     string date = new DateTime(2018 + ((j - 1) / 12), ((j - 1) % 12) + 1, 1).ToString("yyyy-MM-dd");
 
                     // Создание SQL запроса
-                    string query = string.Format(queryTemplate, date, decValue.ToString(CultureInfo.InvariantCulture), kioskName);
+                    string query = string.Format(queryTemplate, date, decValue.ToString(CultureInfo.InvariantCulture), placeName);
 
                     // Добавление SQL запроса
                     sqlQueries.AppendLine(query);

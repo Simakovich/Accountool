@@ -4,10 +4,10 @@ namespace Accountool.Models.Models
 {
     public class FullIndicationModel
     {
-        public int KioskId { get; set; }
+        public int PlaceId { get; set; }
         public int MeasureTypeId { get; set; }
 
-        public string KioskName { get; set; } = null!;
+        public string PlaceName { get; set; } = null!;
 
         public string? TownName { get; set; }
 

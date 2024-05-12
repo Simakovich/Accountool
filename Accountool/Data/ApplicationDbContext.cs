@@ -36,9 +36,9 @@ namespace Accountool.Data
 
         public virtual DbSet<Indication> Indications { get; set; }
 
-        public virtual DbSet<Kiosk> Kiosks { get; set; }
+        public virtual DbSet<Place> Places { get; set; }
 
-        public virtual DbSet<KioskSection> KioskSections { get; set; }
+        public virtual DbSet<PlaceSection> PlaceSections { get; set; }
 
         public virtual DbSet<Contract> Contracts { get; set; }
 
@@ -48,7 +48,7 @@ namespace Accountool.Data
 
         public virtual DbSet<Town> Towns { get; set; }
 
-        public virtual DbSet<UserKiosk> UserKiosks { get; set; }
+        public virtual DbSet<UserPlace> UserPlaces { get; set; }
 
         public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
 
@@ -81,18 +81,18 @@ namespace Accountool.Data
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
                 entity.Property(e => e.UserName).HasMaxLength(256);
 
-                modelBuilder.Entity<UserKiosk>()
-                    .HasKey(uk => new { uk.UserId, uk.KioskId });
+                modelBuilder.Entity<UserPlace>()
+                    .HasKey(uk => new { uk.UserId, uk.PlaceId });
 
-                modelBuilder.Entity<UserKiosk>()
+                modelBuilder.Entity<UserPlace>()
                     .HasOne(uk => uk.User)
-                    .WithMany(u => u.UserKiosks)
+                    .WithMany(u => u.UserPlaces)
                     .HasForeignKey(uk => uk.UserId);
 
-                modelBuilder.Entity<UserKiosk>()
-                    .HasOne(uk => uk.Kiosk)
-                    .WithMany(k => k.UserKiosks)
-                    .HasForeignKey(uk => uk.KioskId);
+                modelBuilder.Entity<UserPlace>()
+                    .HasOne(uk => uk.Place)
+                    .WithMany(k => k.UserPlaces)
+                    .HasForeignKey(uk => uk.PlaceId);
 
                 modelBuilder.Entity<AspNetUserRole>()
                     .HasKey(ur => new { ur.UserId, ur.RoleId });
@@ -157,10 +157,10 @@ namespace Accountool.Data
 
                 entity.Property(e => e.ModelEq).HasMaxLength(200);
 
-                entity.HasOne(d => d.Kiosk).WithMany(p => p.Equipments)
-                    .HasForeignKey(d => d.KioskId)
+                entity.HasOne(d => d.Place).WithMany(p => p.Equipments)
+                    .HasForeignKey(d => d.PlaceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Equipment_Kiosk");
+                    .HasConstraintName("FK_Equipment_Place");
             });
 
             modelBuilder.Entity<Indication>(entity =>
@@ -176,38 +176,38 @@ namespace Accountool.Data
                     .HasConstraintName("FK_Indication_Schetchik");
             });
 
-            modelBuilder.Entity<Kiosk>(entity =>
+            modelBuilder.Entity<Place>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Kiosk__3214EC0772418DFD");
+                entity.HasKey(e => e.Id).HasName("PK__Place__3214EC0772418DFD");
 
-                entity.ToTable("Kiosk");
+                entity.ToTable("Place");
 
                 entity.Property(e => e.Address).HasMaxLength(200);
                 entity.Property(e => e.Arenda).HasColumnType("datetime");
-                entity.Property(e => e.ModelKiosk).HasMaxLength(200);
+                entity.Property(e => e.ModelPlace).HasMaxLength(200);
                 entity.Property(e => e.Name).HasMaxLength(200);
 
-                entity.HasOne(d => d.KioskSection).WithMany(p => p.Kiosks)
-                    .HasForeignKey(d => d.KioskSectionId)
-                    .HasConstraintName("FK_Kiosk_KioskSection");
+                entity.HasOne(d => d.PlaceSection).WithMany(p => p.Places)
+                    .HasForeignKey(d => d.PlaceSectionId)
+                    .HasConstraintName("FK_Place_PlaceSection");
 
-                entity.HasOne(d => d.Town).WithMany(p => p.Kiosks)
+                entity.HasOne(d => d.Town).WithMany(p => p.Places)
                     .HasForeignKey(d => d.TownId)
-                    .HasConstraintName("FK_Kiosk_Town");
+                    .HasConstraintName("FK_Place_Town");
             });
 
-            modelBuilder.Entity<KioskSection>(entity =>
+            modelBuilder.Entity<PlaceSection>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__KioskSec__3214EC071F446306");
+                entity.HasKey(e => e.Id).HasName("PK__PlaceSec__3214EC071F446306");
 
-                entity.ToTable("KioskSection");
+                entity.ToTable("PlaceSection");
 
                 entity.Property(e => e.AdresSection).HasMaxLength(200);
                 entity.Property(e => e.Certificate).HasMaxLength(200);
                 entity.Property(e => e.DataResh).HasColumnType("datetime");
                 entity.Property(e => e.DateArenda).HasColumnType("datetime");
                 entity.Property(e => e.Kadastr).HasMaxLength(200);
-                entity.Property(e => e.KioskName).HasMaxLength(200);
+                entity.Property(e => e.PlaceName).HasMaxLength(200);
                 entity.Property(e => e.TypeArenda).HasMaxLength(200);
             });
 
@@ -232,10 +232,10 @@ namespace Accountool.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Contract_Organization");
 
-                entity.HasOne(d => d.Kiosk).WithMany(p => p.Contracts)
-                    .HasForeignKey(d => d.KioskId)
+                entity.HasOne(d => d.Place).WithMany(p => p.Contracts)
+                    .HasForeignKey(d => d.PlaceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Contract_Kiosk");
+                    .HasConstraintName("FK_Contract_Place");
             });
 
             modelBuilder.Entity<Schetchik>(entity =>
@@ -248,10 +248,10 @@ namespace Accountool.Data
                 entity.Property(e => e.NomerSchetchika).HasMaxLength(200);
                 entity.Property(e => e.Poverka).HasColumnType("datetime");
 
-                entity.HasOne(d => d.Kiosk).WithMany(p => p.Schetchiks)
-                    .HasForeignKey(d => d.KioskId)
+                entity.HasOne(d => d.Place).WithMany(p => p.Schetchiks)
+                    .HasForeignKey(d => d.PlaceId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_Schetchik_Kiosk");
+                    .HasConstraintName("FK_Schetchik_Place");
                 entity.HasOne(d => d.MeasureType).WithMany(p => p.Schetchiks)
                     .HasForeignKey(d => d.MeasureTypeId)
                     .OnDelete(DeleteBehavior.Cascade)

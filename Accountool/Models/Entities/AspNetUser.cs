@@ -48,9 +48,9 @@ namespace Accountool.Models.Entities
 
         public virtual ICollection<ClientProfile> ClientProfiles { get; set; } = new List<ClientProfile>();
 
-        public virtual ICollection<Kiosk> Kiosks { get; set; } = new List<Kiosk>();
+        public virtual ICollection<Place> Places { get; set; } = new List<Place>();
 
-        public virtual ICollection<UserKiosk> UserKiosks { get; set; } = new List<UserKiosk>();
+        public virtual ICollection<UserPlace> UserPlaces { get; set; } = new List<UserPlace>();
 
         [InverseProperty("Users")]
         public virtual ICollection<AspNetRole> Roles { get; set; } = new List<AspNetRole>();

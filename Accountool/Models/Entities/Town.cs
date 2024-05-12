@@ -17,5 +17,5 @@ public partial class Town
     public string Name { get; set; } = null!;
 
     [InverseProperty("Town")]
-    public virtual ICollection<Kiosk> Kiosks { get; set; } = new List<Kiosk>();
+    public virtual ICollection<Place> Places { get; set; } = new List<Place>();
 }
