@@ -3,6 +3,6 @@
 @foreach (var item in Model)
 {
     <p>
-        <a href=@Url.Action("GetAllIndicationsByMeasure", "Home", new { id = item.Id })>@item.Name</a>
+        <a href=@Url.Action("GetAllIndicationsByMeasure", "Indications", new { id = item.Id })>@item.Name</a>
     </p>
 }

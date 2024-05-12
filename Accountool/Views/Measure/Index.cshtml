@@ -17,7 +17,7 @@
                     Average value:
                 </div>
                 <div class="col-md-3">
-                    @Model.Indications.Average(x => x.Indication.Value).ToString("0.00")
+                    @if (@Model?.Indications != null && @Model.Indications.Any()) { @Model?.Indications?.Average(x => x.Indication.Value).ToString("0.00") }
                 </div>
 
             </div>
@@ -28,7 +28,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form method="get" asp-action="GetAllIndicationsByMeasure" asp-controller="Home">
+            <form method="get" asp-action="GetAllIndicationsByMeasure" asp-controller="Indications">
                 <input type="hidden" asp-for="@Model.TitleMeasureTypeId" />
                 <div class="form-row align-items-center">
                     <div class="row">
