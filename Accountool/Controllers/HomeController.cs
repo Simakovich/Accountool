@@ -18,17 +18,31 @@ namespace Accountool.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IMeasurementService _measurementService;
+        private readonly IAIService _aIService;
         
-        public HomeController(ILogger<HomeController> logger, IMeasurementService measurementService)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IMeasurementService measurementService,
+            IAIService aIService)
         {
             _logger = logger;
             _measurementService = measurementService;
+            _aIService = aIService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            var t = await _aIService.SinglePrediction(1);
+            //var r = string.Join(", ", t.Select(x => x.PredictedLabel));
+            return View("./Index", t.PredictedLabel.ToString());
         }
+
+        //public async Task<IActionResult> Train()
+        //{
+        //    var t = await _aIService.SinglePrediction(1);
+        //    var r = string.Join(", ", t.Select(x => x.PredictedLabel));
+        //    return View(r);
+        //}
 
         public IActionResult Privacy()
         {

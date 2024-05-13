@@ -356,9 +356,7 @@ CREATE TABLE Indication
     Id INT PRIMARY KEY IDENTITY,
     Month DATETIME NOT NULL,
 	Value DECIMAL (8,2) NOT NULL,
-    Tarif1 FLOAT NOT NULL,
-    Tarif2 FLOAT NOT NULL,
-    TarifSumm FLOAT NOT NULL,
+    Tarif1 FLOAT NULL,
     Archive BIT NOT NULL,
     SchetchikId INT NOT NULL,
     CONSTRAINT FK_Indication_Schetchik FOREIGN KEY (SchetchikId)

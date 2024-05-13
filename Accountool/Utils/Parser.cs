@@ -28,7 +28,7 @@ namespace Accountool.Utils
                 string[] parts = lines[i].Split("\t");
 
                 // Название киоска
-                string placeName = parts[0].Replace("Киоск№", "");
+                string kioskName = parts[0].Replace("Киоск№", "");
 
                 for (int j = 1; j < parts.Length; j++)
                 {
@@ -39,7 +39,7 @@ namespace Accountool.Utils
                     string date = new DateTime(2018 + ((j - 1) / 12), ((j - 1) % 12) + 1, 1).ToString("yyyy-MM-dd");
 
                     // Создание SQL запроса
-                    string query = string.Format(queryTemplate, date, decValue.ToString(CultureInfo.InvariantCulture), placeName);
+                    string query = string.Format(queryTemplate, date, decValue.ToString(CultureInfo.InvariantCulture), kioskName);
 
                     // Добавление SQL запроса
                     sqlQueries.AppendLine(query);

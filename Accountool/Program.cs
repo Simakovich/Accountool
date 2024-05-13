@@ -4,7 +4,10 @@ using Accountool.Models.DataAccess;
 using Accountool.Models.Entities;
 using Accountool.Models.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +21,32 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IAIService, AIService>();
+
+builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();
 builder.Services.AddScoped<IRepository<Place>, Repository<Place>>();
 builder.Services.AddScoped<IRepository<Town>, Repository<Town>>();
 builder.Services.AddScoped<IRepository<MeasureType>, Repository<MeasureType>>();
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+            new CultureInfo("en-US"),
+        };
+
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
+builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+    .AddViewOptions(options =>
+    {
+        options.HtmlHelperOptions.ClientValidationEnabled = false;
+    });
 //builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 //        .AddEntityFrameworkStores<ApplicationDbContext>()
 //        .AddDefaultTokenProviders();

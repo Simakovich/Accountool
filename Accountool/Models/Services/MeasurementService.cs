@@ -31,7 +31,7 @@ namespace Accountool.Models.Services
     {
         private readonly IRepository<Indication> _indications;
         private readonly IRepository<Schetchik> _schetchiks;
-        private readonly IRepository<Place> _place;
+        private readonly IRepository<Place> _places;
         private readonly IRepository<Town> _town;
         private readonly IRepository<MeasureType> _measureTypes;
 
@@ -45,7 +45,7 @@ namespace Accountool.Models.Services
             _indications = indications;
             _schetchiks = schetchiks;
             _measureTypes = measureTypes;
-            _place = place;
+            _places = place;
             _town = town;
         }
 
@@ -72,7 +72,7 @@ namespace Accountool.Models.Services
             var indications = from mt in _measureTypes.GetAll()
                               join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                               join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                              join k in _place.GetAll() on s.PlaceId equals k.Id
+                              join k in _places.GetAll() on s.PlaceId equals k.Id
                               join t in _town.GetAll() on k.TownId equals t.Id
                               where mt.Id == measureTypeid
                               && (placeId == null || k.Id == placeId)
@@ -136,7 +136,7 @@ namespace Accountool.Models.Services
             var places = from mt in _measureTypes.GetAll()
                          join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                          join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                         join k in _place.GetAll() on s.PlaceId equals k.Id
+                         join k in _places.GetAll() on s.PlaceId equals k.Id
                          where mt.Id == measureTypeid
                          select new IdNameModel { Id = k.Id, Name = k.Name };
 
@@ -149,7 +149,7 @@ namespace Accountool.Models.Services
             var townsId = from mt in _measureTypes.GetAll()
                          join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
                          join i in _indications.GetAll() on s.Id equals i.SchetchikId
-                         join k in _place.GetAll() on s.PlaceId equals k.Id
+                         join k in _places.GetAll() on s.PlaceId equals k.Id
                          join t in _town.GetAll() on k.TownId equals t.Id
                          where mt.Id == measureTypeid
                          select new IdNameModel { Id = t.Id, Name = t.Name };

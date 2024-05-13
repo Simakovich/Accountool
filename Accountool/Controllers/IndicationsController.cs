@@ -148,7 +148,7 @@ namespace Accountool.Controllers
         // GET: Indications/Create
         public IActionResult Create()
         {
-            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika");
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "NomerSchetchika");
             return View();
         }
 
@@ -157,15 +157,16 @@ namespace Accountool.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Month,Tarif1,Tarif2,TarifSumm,Archive,SchetchikId")] Indication indication)
+        public async Task<IActionResult> Create([Bind("Id,Month,Tarif1,Value,Archive,SchetchikId")] Indication indication)
         {
+            ModelState.Remove("Schetchik");
             if (ModelState.IsValid)
             {
                 _context.Add(indication);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "NomerSchetchika", indication.SchetchikId);
             return View(indication);
         }
 
@@ -182,7 +183,7 @@ namespace Accountool.Controllers
             {
                 return NotFound();
             }
-            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks.Distinct(), "Id", "ModelSchetchika", indication.SchetchikId);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks.Distinct(), "Id", "NomerSchetchika", indication.SchetchikId);
             return View(indication);
         }
 
@@ -198,6 +199,7 @@ namespace Accountool.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("Schetchik");
             if (ModelState.IsValid)
             {
                 try
@@ -218,7 +220,7 @@ namespace Accountool.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "ModelSchetchika", indication.SchetchikId);
+            ViewData["SchetchikId"] = new SelectList(_context.Schetchiks, "Id", "NomerSchetchika", indication.SchetchikId);
             return View(indication);
         }
 

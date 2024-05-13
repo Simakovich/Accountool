@@ -17,14 +17,7 @@ namespace Accountool.Models.Entities
         [Required]
         public decimal Value { get; set; }
 
-        [Required]
         public double Tarif1 { get; set; }
-
-        [Required]
-        public double Tarif2 { get; set; }
-
-        [Required]
-        public double TarifSumm { get; set; }
 
         public bool Archive { get; set; }
 
