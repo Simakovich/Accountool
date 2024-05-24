@@ -1,7 +1,7 @@
-﻿@model Accountool.Models.ViewModel.MeasureWithIndication
+﻿@model Accountool.Models.ViewModel.MeasureWithIndications
 
 @{
-    ViewData["Title"] = "Indications";
+    ViewData["Title"] = "Indication";
 }
 
 <div class="container">
@@ -9,9 +9,7 @@
         <div class="row">
             <div class="col-md-2 border border-primary border-right shadow box-shadow">
                 <div class="row border border-primary border-right shadow box-shadow">
-                    @Html.Partial("./../MeasureTypes/_MeasureMenu", Model.MeasureTypes)
-                </div>
-                <div class="row border border-primary border-right shadow box-shadow">
+                    @Html.Partial("./../Indications/_MeasureMenu", Model)
                 </div>
             </div>
             <div class="col-md-10">

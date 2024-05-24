@@ -1,0 +1,74 @@
+﻿@model Accountool.Models.ViewModel.Prediction.PredictionViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <form method="get" asp-action="GetPredictionFor" asp-controller="Prediction">
+            <input type="hidden" asp-for="@Model.MeasureTypeId" required />
+            <div class="form-row align-items-center">
+                <div class="row">
+                    <div class="col-md-5 border border-primary border-right shadow box-shadow">
+                        <div class="row">
+                            <div class="col-md-12 border border-primary border-right shadow box-shadow">
+                                <div class="row">
+                                    <label class="sr-only col-md-12 text-center">Place</label>
+                                </div>
+                                <div class="row my-2">
+                                    <div class="col-md-12">
+                                        <select class="form-control col-md-4" asp-for="SelectedPlace" asp-items="Model.Places"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 border border-primary border-right shadow box-shadow">
+                                <div class="row">
+                                    <label class="sr-only col-md-12 text-center">Counters</label>
+                                </div>
+                                <div class="row my-2">
+                                    <div class="col-md-12">
+                                        <select class="form-control" id="CounterSelect" name="CounterSelect" required></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 border border-primary border-right shadow box-shadow d-flex flex-column justify-content-center">
+                        <div class="row">
+                            <div class="col-md-12  text-center">
+                                <label class="sr-only text-center">Month</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <select class="form-control w-auto" name="month" asp-for="SelectedStartMonth" asp-items="Model.Months" required></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 border border-primary border-right shadow box-shadow d-flex justify-content-center align-items-center">
+                        <button id="spinBtn" type="submit" class="btn btn-primary mb-2">Predict</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Обрабатываем событие изменения выбора в выпадающем списке мест
+        $('#SelectedPlace').change(function () {
+            console.log('SelectedPlace work!')
+            var selectedPlaceId = $(this).val(); // Получаем выбранный ID места
+            $.get('/Schetchiks/GetCounters', { placeId: selectedPlaceId }, function (data) {
+                // Очищаем существующие опции счетчиков
+                $('#CounterSelect').empty();
+                // Проходим по каждому объекту счетчика в полученных данных
+                $.each(data, function (index, item) {
+                    // Для каждого объекта счетчика создаем новый элемент <option>
+                    // Устанавливаем значение value равное id счетчика и текст опции равный name счетчика
+                    $('#CounterSelect').append($('<option></option>').val(item.id).text(item.name));
+                });
+            });
+        });
+    });
+</script>

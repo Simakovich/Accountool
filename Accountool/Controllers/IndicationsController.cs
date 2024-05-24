@@ -19,18 +19,21 @@ namespace Accountool.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IMeasurementService _measurementService;
+        private readonly IControlHelperService _controlHelperService;
 
         public IndicationsController(
             ApplicationDbContext context,
-            IMeasurementService measurementService)
+            IMeasurementService measurementService,
+        IControlHelperService controlHelperService)
         {
             _context = context;
             _measurementService = measurementService;
+            _controlHelperService = controlHelperService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var measurements = new MeasureWithIndication();
+            var measurements = new MeasureWithIndications();
             measurements.MeasureTypes = await _measurementService.GetAllMeasureTypes();
             await FillMinMaxYear(measurements);
             await FillMinMaxMonth(measurements);
@@ -38,7 +41,7 @@ namespace Accountool.Controllers
         }
 
         public async Task<IActionResult> GetAllIndicationsByMeasure(
-            int id,
+            int measureTypeId,
             int? SelectedPlace,
             int? SelectTown,
             int? pageNumber,
@@ -47,25 +50,29 @@ namespace Accountool.Controllers
             int? SelectedStartMonth = null,
             int? SelectedLastMonth = null)
         {
-            var measureTypeId = id;
-            var measurements = new MeasureWithIndication();
-            measurements.MeasureTypes = await _measurementService.GetAllMeasureTypes();
-            measurements.TitleMeasureTypeName = measurements.MeasureTypes.FirstOrDefault(x => x.Id == measureTypeId)?.Name ?? string.Empty;
-            measurements.TitleMeasureTypeId = measureTypeId;
-            var indicationsQueriable = await _measurementService.GetFilteredMeasures(measureTypeId, SelectTown, SelectedPlace, SelectedStartMonth, SelectedLastMonth, SelectedStartYear, SelectedLastYear);
-            measurements.Indications = await PaginatedList<FullIndicationModel>.CreateAsync(indicationsQueriable, pageNumber ?? 1, Constants.PageSize);
-            await FillMinMaxYear(measurements);
-            await FillMinMaxMonth(measurements);
-            await FillPlaces(measurements);
-            await FillTowns(measurements);
+            //var measureTypeId = id;
+            //measurements.MeasureTypes = await _measurementService.GetAllMeasureTypes();
+            //measurements.MeasureTypeName = measurements.MeasureTypes.FirstOrDefault(x => x.Id == measureTypeId)?.Name ?? string.Empty;
+            //measurements.MeasureTypeId = measureTypeId;
+            var measurementsValue = await _controlHelperService.GetAvailableValues(measureTypeId);
+            var measurements = new MeasureWithIndications(measurementsValue);
+            var indicationsQueriable = await _measurementService.GetFilteredMeasures(measureTypeId, SelectTown, SelectedPlace,
+                SelectedStartMonth, SelectedLastMonth, SelectedStartYear, SelectedLastYear);
+            measurements.FullIndicationModels =
+                await PaginatedList<FullIndicationModel>.CreateAsync(indicationsQueriable, pageNumber ?? 1,
+                    Constants.PageSize);
+            //await FillMinMaxYear(measurements);
+            //await FillMinMaxMonth(measurements);
+            //await FillPlaces(measurements);
+            //await FillTowns(measurements);
             return View("./../Measure/MasterPageMeasure", measurements);
         }
 
-        private async Task FillMinMaxYear(MeasureWithIndication measurements)
+            private async Task FillMinMaxYear(MeasureWithIndications measurements)
         {
-            if (measurements.TitleMeasureTypeId.HasValue)
+            if (measurements.MeasureTypeId.HasValue)
             {
-                var minMaxYear = await _measurementService.GetMinMaxYear(measurements.TitleMeasureTypeId.Value);
+                var minMaxYear = await _measurementService.GetMinMaxYear(measurements.MeasureTypeId.Value);
                 if (minMaxYear != null)
                 {
                     measurements.MinYear = (int)((int?)minMaxYear.FirstDate.Year ?? Constants.FirstDayCurrentMonth.Date.Year);
@@ -81,7 +88,7 @@ namespace Accountool.Controllers
             }
         }
 
-        private async Task FillMinMaxMonth(MeasureWithIndication measurements)
+        private async Task FillMinMaxMonth(MeasureWithIndications measurements)
         {
             measurements.Months = Enumerable.Range(Constants.FirstMonth, Constants.LastMonth - Constants.FirstMonth + 1)
                                 .Select(i => new SelectListItem
@@ -92,11 +99,11 @@ namespace Accountool.Controllers
             measurements.SelectedLastMonth = Constants.LastMonth.ToString();
         }
 
-        private async Task FillPlaces(MeasureWithIndication measurements)
+        private async Task FillPlaces(MeasureWithIndications measurements)
         {
-            if (measurements.TitleMeasureTypeId.HasValue)
+            if (measurements.MeasureTypeId.HasValue)
             {
-                var places = await _measurementService.GetPlaces(measurements.TitleMeasureTypeId.Value);
+                var places = await _measurementService.GetPlaces(measurements.MeasureTypeId.Value);
                 measurements.Places = places.Select(x => new { x.Id, x.Name })
                                     .Distinct()
                                     .Select(i => new SelectListItem
@@ -109,11 +116,11 @@ namespace Accountool.Controllers
             }
         }
 
-        private async Task FillTowns(MeasureWithIndication measurements)
+        private async Task FillTowns(MeasureWithIndications measurements)
         {
-            if (measurements.TitleMeasureTypeId.HasValue)
+            if (measurements.MeasureTypeId.HasValue)
             {
-                var towns = await _measurementService.GetTowns(measurements.TitleMeasureTypeId.Value);
+                var towns = await _measurementService.GetTowns(measurements.MeasureTypeId.Value);
                 measurements.Towns = towns.Select(x => new { x.Id, x.Name })
                                     .Distinct()
                                     .Select(i => new SelectListItem

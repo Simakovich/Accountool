@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Accountool.styles.css" asp-append-version="true" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -33,7 +36,10 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Indications" asp-action="Index">Indications</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Indications" asp-action="Index">Indication</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Prediction" asp-action="Index">Prediction</a>
                         </li>
                     </ul>
                     <a class="navbar-brand mx-auto text-white" asp-area="" asp-controller="Home" asp-action="Index">Name of your company</a>
@@ -42,25 +48,30 @@
             </div>
         </nav>
     </header>
-
-    <div id="content"></div> <!-- Сюда будет загружен ответ от сервера -->
-
-    <div id="loader" style="display: none;">
-        <img src="D:\Univer\Diplom\Accountool\Accountool\wwwroot\icons8-спиннер.gif" alt="Loading..." />
-    </div>
-
     <div class="container-fluid">
         @RenderBody()
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="demo-content bg-alt col">
+                <div style="color:white">Trading object type "Kiosk"</div>
+                <img src="/images/kiosk.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Kiosk" "">
+            </div>
+            <div class="demo-content bg-alt col">
+                <div style="color:white">Non-insulated trading object type</div>
+                <img src="/images/objekt.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Non-insulated trading object type">
+            </div>
+            <div class="demo-content bg-alt col">
+                <div style="color:white">Trading object type "Pavilion"</div>
+                <img src="/images/pavilion.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Pavilion" "">
+            </div>
+        </div>
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - Accountool - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

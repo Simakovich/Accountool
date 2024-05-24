@@ -32,17 +32,8 @@ namespace Accountool.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var t = await _aIService.SinglePrediction(1);
-            //var r = string.Join(", ", t.Select(x => x.PredictedLabel));
-            return View("./Index", t.PredictedLabel.ToString());
+            return View();
         }
-
-        //public async Task<IActionResult> Train()
-        //{
-        //    var t = await _aIService.SinglePrediction(1);
-        //    var r = string.Join(", ", t.Select(x => x.PredictedLabel));
-        //    return View(r);
-        //}
 
         public IActionResult Privacy()
         {

@@ -1,0 +1,61 @@
+﻿@model Accountool.Models.ViewModel.Prediction.PredictionViewModel
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FullIndicationModel.PlaceName)
+        </th>
+        <th>
+                @Html.DisplayNameFor(model => model.FullIndicationModel.TownName)
+        </th>
+        <th>
+                @Html.DisplayNameFor(model => model.FullIndicationModel.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FullIndicationModel.Indication.Month)
+        </th>
+        <th>
+                @Html.DisplayNameFor(model => model.FullIndicationModel.Indication.Tarif1)
+        </th>
+        <th>Last Value</th>
+@*         <th>
+                @Html.DisplayNameFor(model => model.FullIndicationModel.Indication.Value)
+        </th> *@
+        <th>
+            @Html.DisplayNameFor(model => model.PredictedValue)
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelModel => Model.FullIndicationModel.PlaceName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => Model.FullIndicationModel.TownName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelModel => Model.FullIndicationModel.Address)
+            </td>
+            <td>
+                @Model?.FullIndicationModel?.Indication?.Month.ToString("dd.MM.yyyy")
+            </td>
+            <td>
+                @Model?.FullIndicationModel?.Indication?.Tarif1.ToString("0.00")
+            </td>
+            <td>
+                @Model?.FullIndicationModel?.Indication?.Value.ToString("0.00")
+            </td>
+            <td>
+                @Model?.PredictedValue?.ToString("0.00")
+            </td>
+            <td>
+                <input type="hidden" name="MeasureTypeId" value="@Model.FullIndicationModel;.MeasureTypeId" />
+                <a asp-controller="Indications" asp-action="Edit" asp-route-id="@Model?.FullIndicationModel?.Indication?.Id">Edit</a> |
+                <a asp-controller="Indications" asp-action="Details" asp-route-id="@Model?.FullIndicationModel?.Indication?.Id">Details</a> |
+                <a asp-controller="Indications" asp-action="Delete" asp-route-id="@Model?.FullIndicationModel?.Indication?.Id">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

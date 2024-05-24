@@ -3,6 +3,7 @@ using Accountool.Models;
 using Accountool.Models.DataAccess;
 using Accountool.Models.Entities;
 using Accountool.Models.Services;
+using Accountool.Models.ViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IAIService, AIService>();
+builder.Services.AddScoped<IControlHelperService, ControlHelperService>();
 
 builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();

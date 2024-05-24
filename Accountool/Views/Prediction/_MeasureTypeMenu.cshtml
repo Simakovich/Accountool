@@ -1,0 +1,8 @@
+﻿@model Accountool.Models.ViewModel.Prediction.PredictionViewModel
+
+@foreach (var item in Model.MeasureTypes)
+{
+    <div class="row @((item.Id == Model.MeasureTypeId) ? "highlighted" : "")">
+        <a href="@Url.Action("IndexWithMeasureType", "Prediction", new { measureTypeId = item.Id })" class="@((item.Id == Model.MeasureTypeId) ? "highlighted" : "")">@item.Name</a>
+    </div>
+}

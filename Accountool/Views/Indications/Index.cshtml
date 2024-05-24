@@ -24,7 +24,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.PlaceName)
@@ -36,20 +36,31 @@
                 @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Indication.Month)
+                @item?.Indication?.Month.ToString("dd.MM.yyyy")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Indication.Tarif1)
+                @item?.Indication?.Tarif1.ToString("0.00")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Indication.Value)
+                @item?.Indication?.Value.ToString("0.00")
             </td>
             <td>
-                    <input type="hidden" name="MeasureTypeId" value="@Model.FirstOrDefault()?.MeasureTypeId" />
+                @{
+                    int nextMonth = item?.Indication?.Month.Month + 1 ?? 1; if (nextMonth > 12) nextMonth = 1;
+                }
+                <input type="hidden" name="measureTypeId" value="@item?.MeasureTypeId" />
                 <a asp-controller="Indications" asp-action="Edit" asp-route-id="@item.Indication.Id">Edit</a> |
                 <a asp-controller="Indications" asp-action="Details" asp-route-id="@item.Indication.Id">Details</a> |
-                <a asp-controller="Indications" asp-action="Delete" asp-route-id="@item.Indication.Id">Delete</a>
+                <a asp-controller="Indications" asp-action="Delete" asp-route-id="@item.Indication.Id">Delete</a> |
+                <a asp-controller="Prediction"
+                    asp-action="GetPredictionFor"
+                    asp-route-counterSelect="@item?.Indication?.SchetchikId"
+                    asp-route-measureTypeId="@item?.MeasureTypeId"
+                    asp-route-month="@nextMonth">
+                    Predict
+                </a>
             </td>
-        </tr>}
+        </tr>
+    }
     </tbody>
 </table>

@@ -21,18 +21,6 @@ namespace Accountool.Controllers
                 var users = _userManager.Users.ToList();
                 return View("./Identity/Identities.cshtml", users);
                 // Your code here
-            }
-        //}
-        //private readonly UserManager<IdentityUser> _userManager;
-
-        //public IdentityController(UserManager<IdentityUser> userManager)
-        //{
-        //    _userManager = userManager;
-        //}
-        //public IActionResult Index()
-        //{
-        //    var users = _userManager.Users.ToList();
-        //    return View("./Identity/Identities.cshtml", users);
-        //}
+        }
     }
 }

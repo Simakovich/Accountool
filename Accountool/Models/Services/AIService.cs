@@ -16,8 +16,8 @@ namespace Accountool.Models.Services
 {
     public interface IAIService
     {
-        Task<ConsumptionPrediction> SinglePrediction(int measureTypeId = 1);
-        Task<IEnumerable<ConsumptionPrediction>> PredictedMeterReadings(int measureTypeId = 1);
+        Task<ConsumptionPrediction> SinglePrediction(int measureTypeId = 1, int month = 2, int measurementObjectId = 0);
+        Task<IEnumerable<ConsumptionPrediction>> PredictedMeterReadings(int measureTypeId = 1, int month = 2, int measurementObjectId = 0);
     }
 
     public class AIService : IAIService
@@ -38,7 +38,7 @@ namespace Accountool.Models.Services
             _places = places;
         }
         
-        public async Task<ConsumptionPrediction> SinglePrediction(int measureTypeId = 1)
+        public async Task<ConsumptionPrediction> SinglePrediction(int measureTypeId = 1, int month = 2, int measurementObjectId = 0)
         {
             var mlContext = new MLContext();
             var indications = from mt in _measureTypes.GetAll()
@@ -46,7 +46,7 @@ namespace Accountool.Models.Services
                               join i in _indications.GetAll() on s.Id equals i.SchetchikId
                               join k in _places.GetAll() on s.PlaceId equals k.Id
                               where mt.Id == measureTypeId
-                              select new ConsumptionData { Month = i.Month.Month, Label = Convert.ToSingle(i.Value), MeasurementObjectId = k.Id };
+                              select new ConsumptionData { Month = i.Month.Month, Label = Convert.ToSingle(i.Value), MeasurementObjectId = s.Id };
 
             var data = mlContext.Data.LoadFromEnumerable(indications.ToList());
 
@@ -60,11 +60,6 @@ namespace Accountool.Models.Services
                 replacementMode: MissingValueReplacingEstimator.ReplacementMode.Mean
             ).Fit(processedData).Transform(processedData);
 
-            //// var enumerableData = mlContext.Data.CreateEnumerable<ConsumptionData>(processedData, reuseRowObject: false);
-            //foreach (var d in enumerableData)
-            //{
-            //    Debug.WriteLine(d.Month.ToString() + ' ' + d.Label.ToString() + ' ' + d.MeasurementObjectId);
-            //}
             // Определите пайплайн для прогнозирования.
             var pipeline = mlContext.Transforms.Categorical.OneHotEncoding("Month")
                 .Append(mlContext.Transforms.Categorical.OneHotEncoding("MeasurementObjectId"))
@@ -79,11 +74,11 @@ namespace Accountool.Models.Services
             var predictionFunction = mlContext.Model.CreatePredictionEngine<ConsumptionData, ConsumptionPrediction>(model);
 
             // В качестве параметра передайте месяц, для которого вы хотите получить прогноз
-            var singlePrediction = predictionFunction.Predict(new ConsumptionData() { Month = 2, MeasurementObjectId = 0 });
+            var singlePrediction = predictionFunction.Predict(new ConsumptionData() { Month = month, MeasurementObjectId = measurementObjectId });
             return singlePrediction;
         }
 
-        public async Task<IEnumerable<ConsumptionPrediction>> PredictedMeterReadings(int measureTypeId = 1)
+        public async Task<IEnumerable<ConsumptionPrediction>> PredictedMeterReadings(int measureTypeId = 1, int month = 2, int measurementObjectId = 0)
         {
             var mlContext = new MLContext();
             var indications = from mt in _measureTypes.GetAll()

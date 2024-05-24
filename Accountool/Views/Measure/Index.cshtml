@@ -1,12 +1,12 @@
-﻿@model Accountool.Models.ViewModel.MeasureWithIndication
+﻿@model Accountool.Models.ViewModel.MeasureWithIndications
 
 <main role="main" class="pb-3">
-   <div id="spinner" style="display: none;">
+@*    <div id="spinner" style="display: none;">
         <img src="D:\Univer\Diplom\Accountool\Accountool\wwwroot\icons8-спиннер.gif" alt="Loading..." />
-   </div>
+   </div> *@
     <div class="row border border-primary border-right shadow box-shadow">
         <div class="col-md-3">
-            @if (@Model.TitleMeasureTypeName != null){<h1>@Model.TitleMeasureTypeName</h1>}
+            @if (@Model.MeasureTypeName != null){<h1>@Model.MeasureTypeName</h1>}
 
         </div>
         <div class="col-md-5">
@@ -17,7 +17,7 @@
                     Average value:
                 </div>
                 <div class="col-md-3">
-                    @if (@Model?.Indications != null && @Model.Indications.Any()) { @Model?.Indications?.Average(x => x.Indication.Value).ToString("0.00") }
+                    @if (@Model?.FullIndicationModels != null && @Model.FullIndicationModels.Any()) { @Model?.FullIndicationModels?.Average(x => x.Indication.Value).ToString("0.00") }
                 </div>
 
             </div>
@@ -29,7 +29,7 @@
     <div class="row">
         <div class="col-md-12">
             <form method="get" asp-action="GetAllIndicationsByMeasure" asp-controller="Indications">
-                <input type="hidden" asp-for="@Model.TitleMeasureTypeId" />
+                <input type="hidden" name="measureTypeId" asp-for="@Model.MeasureTypeId" />
                 <div class="form-row align-items-center">
                     <div class="row">
                         <div class="col-md-3 border border-primary border-right shadow box-shadow">
@@ -102,24 +102,24 @@
         <div class="col-md-4 d-flex justify-content-center align-items-center">
         </div>
         <div class="col-md-2 d-flex justify-content-center align-items-center">
-            Page @(Model.Indications.PageIndex) of @(Model.Indications.TotalPages)
+            Page @(Model.FullIndicationModels.PageIndex) of @(Model.FullIndicationModels.TotalPages)
         </div>
         <div class="col-md-1 d-flex justify-content-center align-items-center">
-            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.Indications.PageIndex - 1 })">Previous</a>
+            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.FullIndicationModels.PageIndex - 1 })">Previous</a>
         </div>
         <div class="col-md-2 d-flex justify-content-center align-items-center">
-            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.Indications.PageIndex + 1 })">Next</a>
+            <a href="@Url.Action("GetAllIndicationsByMeasure", new { pageNumber = Model.FullIndicationModels.PageIndex + 1 })">Next</a>
         </div>
         <div class="col-md-4 d-flex justify-content-center align-items-center">
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center align-items-center">
-            @Html.Partial("./../Indications/Index", Model.Indications)
+            @Html.Partial("./../Indications/Index", Model.FullIndicationModels)
         </div>
     </div>
 </main>
-<script type="text/javascript">
+@* <script type="text/javascript">
     $(document).ready(function () {
         $("#spinBtn").click(function () {
             // Показать спиннер
@@ -127,7 +127,7 @@
 
             // Отправить AJAX-запрос
             $.ajax({
-                url: '/Home/GetAllIndicationsByMeasure', // URL контроллера и действия
+                url: '/Indications/GetAllIndicationsByMeasure', // URL контроллера и действия
                 type: 'GET', // Тип запроса
                 success: function (result) {
                     // Если запрос успешно обработан, вставить ответ в контейнер
@@ -144,4 +144,4 @@
             });
         });
     });
-</script>
+</script> *@

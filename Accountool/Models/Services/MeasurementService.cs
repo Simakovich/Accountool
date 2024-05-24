@@ -20,6 +20,7 @@ namespace Accountool.Models.Services
         Task Remove(int id);
         Task<IEnumerable<Indication>> GetForSchetchik(int SchetchikId);
         Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(int measureTypeid, int? townId = null, int? placeId = null, int? monthFrom = null, int? monthTo = null, int? yearFrom = null, int? yearTo = null);
+        Task<FullIndicationModel> GetLastMeasureByCounter(int measureTypeid, int counterId);
         Task<IEnumerable<MeasureType>> GetAllMeasureTypes();
         Task<IEnumerable<Indication>> GetAllIndications();
         Task<FirstLastYearModel> GetMinMaxYear(int measureTypeid);
@@ -59,7 +60,6 @@ namespace Accountool.Models.Services
             return _measureTypes.GetAll();
         }
 
-
         public async Task<IQueryable<FullIndicationModel>> GetFilteredMeasures(
             int measureTypeid,
             int? townId = null,
@@ -77,7 +77,7 @@ namespace Accountool.Models.Services
                               where mt.Id == measureTypeid
                               && (placeId == null || k.Id == placeId)
                               && (townId == null || k.TownId == townId)
-                              select new { i, k, t };
+                              select new { i, k, t, mt, s  };
 
             if (monthFrom != null)
             {
@@ -105,8 +105,38 @@ namespace Accountool.Models.Services
                 PlaceName = x.k.Name,
                 Address = x.k.Address,
                 TownName = x.t.Name,
-                Indication = x.i
+                Indication = x.i,
+                MeasureTypeId = x.mt.Id
             });
+        }
+
+        public async Task<FullIndicationModel> GetLastMeasureByCounter(
+            int measureTypeid,
+            int counterId)
+        {
+            var indications = from mt in _measureTypes.GetAll()
+                              join s in _schetchiks.GetAll() on mt.Id equals s.MeasureTypeId
+                              join i in _indications.GetAll() on s.Id equals i.SchetchikId
+                              join k in _places.GetAll() on s.PlaceId equals k.Id
+                              join t in _town.GetAll() on k.TownId equals t.Id
+                              where mt.Id == measureTypeid
+                              && s.Id == counterId
+                              select new { i, k, t };
+
+
+            var indication = indications.OrderBy(x => x.i.Month).FirstOrDefault();
+
+
+            var result = new FullIndicationModel()
+            {
+                PlaceId = indication.k.Id,
+                PlaceName = indication.k.Name,
+                Address = indication.k.Address,
+                TownName = indication.t.Name,
+                Indication = indication.i
+            };
+
+            return result;
         }
 
         public async Task<FirstLastYearModel> GetMinMaxYear(

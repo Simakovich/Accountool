@@ -1,0 +1,25 @@
+﻿@model Accountool.Models.ViewModel.Prediction.PredictionViewModel
+
+@{
+    ViewData["Title"] = "Prediction";
+}
+
+<div class="container">
+    <main role="main" class="pb-3">
+        <div class="row">
+            <div class="col-md-2 border border-primary border-right shadow box-shadow">
+                @Html.Partial("./_MeasureTypeMenu", Model)
+            </div>
+            <div class="col-md-10 border border-primary border-right shadow box-shadow">
+                <div class="row border border-primary border-right shadow box-shadow">
+                    <div class="col-md-12">
+                        @Html.Partial("./PredictOne", Model)
+                    </div>
+                </div>
+                <div class="row border border-primary border-right shadow box-shadow">
+                    @Html.Partial("./PredictOneResult", Model)
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
