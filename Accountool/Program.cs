@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,13 +19,22 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Настройка Identity
+builder.Services.AddIdentity<AspNetUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+
 
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IControlHelperService, ControlHelperService>();
+//builder.Services.AddTransient<IEmailService, EmailService>();
+//builder.Services.AddTransient<IIdentityService, IdentityService>();
 
 builder.Services.AddScoped<IRepository<Indication>, Repository<Indication>>();
 builder.Services.AddScoped<IRepository<Schetchik>, Repository<Schetchik>>();
@@ -43,6 +53,14 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
+var emailConfig = builder.Configuration.GetSection("EmailSettings");
+builder.Services.AddTransient<IEmailService>(provider => new EmailService(
+    emailConfig["SmtpServer"],
+    int.Parse(emailConfig["SmtpPort"]),
+    emailConfig["FromAddress"],
+    emailConfig["FromAddressTitle"],
+    emailConfig["Username"],
+    emailConfig["Password"]));
 
 builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
     .AddViewOptions(options =>

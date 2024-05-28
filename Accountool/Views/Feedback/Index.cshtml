@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Accountool.Models.ViewModel.Feedback.FeedbackViewModel
+
+<form asp-action="SendFeedback" method="post">
+    <div class="form-group">
+        <label for="message">Сообщение</label>
+        <textarea asp-for="Message" class="form-control"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
