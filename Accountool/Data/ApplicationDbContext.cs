@@ -7,7 +7,9 @@ using System.Collections.Generic;
 
 namespace Accountool.Data
 {
-    public partial class ApplicationDbContext : IdentityDbContext
+    //public partial class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string, AspNetUserClaim<string>,
+    //    AspNetUserRoles<string>, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+    public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext()
         {
@@ -17,19 +19,7 @@ namespace Accountool.Data
             : base(options)
         {
         }
-
-        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-
-        public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-        public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-        public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
-
+        
         public virtual DbSet<ClientProfile> ClientProfiles { get; set; }
 
         public virtual DbSet<Equipment> Equipment { get; set; }
@@ -49,9 +39,7 @@ namespace Accountool.Data
         public virtual DbSet<Town> Towns { get; set; }
 
         public virtual DbSet<UserPlace> UserPlaces { get; set; }
-
-        public virtual DbSet<AspNetUserRole> AspNetUserRoles { get; set; }
-
+        
         public virtual DbSet<MeasureType> MeasureTypes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -60,95 +48,13 @@ namespace Accountool.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<AspNetRole>(entity =>
-            {
-                entity.Property(e => e.Name).HasMaxLength(256);
-                entity.Property(e => e.NormalizedName).HasMaxLength(256);
-            });
-
-            modelBuilder.Entity<AspNetRoleClaim>(entity =>
-            {
-                entity.Property(e => e.RoleId).HasMaxLength(450);
-
-                entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetUser>(entity =>
-            {
-                entity.Property(e => e.Email).HasMaxLength(256);
-                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-                entity.Property(e => e.UserName).HasMaxLength(256);
-
-                modelBuilder.Entity<UserPlace>()
-                    .HasKey(uk => new { uk.UserId, uk.PlaceId });
-
-                modelBuilder.Entity<UserPlace>()
-                    .HasOne(uk => uk.User)
-                    .WithMany(u => u.UserPlaces)
-                    .HasForeignKey(uk => uk.UserId);
-
-                modelBuilder.Entity<UserPlace>()
-                    .HasOne(uk => uk.Place)
-                    .WithMany(k => k.UserPlaces)
-                    .HasForeignKey(uk => uk.PlaceId);
-
-                modelBuilder.Entity<AspNetUserRole>()
-                    .HasKey(ur => new { ur.UserId, ur.RoleId });
-
-                modelBuilder.Entity<AspNetUserRole>()
-                    .HasOne(ur => ur.User)
-                    .WithMany(u => u.UserRoles)
-                    .HasForeignKey(ur => ur.UserId);
-
-                modelBuilder.Entity<AspNetUserRole>()
-                    .HasOne(ur => ur.Role)
-                    .WithMany(r => r.UserRoles)
-                    .HasForeignKey(ur => ur.RoleId);
-            });
-
-            modelBuilder.Entity<AspNetUserClaim>(entity =>
-            {
-                entity.Property(e => e.UserId).HasMaxLength(450);
-
-                entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserLogin>(entity =>
-            {
-                entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-                entity.Property(e => e.LoginProvider).HasMaxLength(128);
-                entity.Property(e => e.ProviderKey).HasMaxLength(128);
-                entity.Property(e => e.UserId).HasMaxLength(450);
-
-                entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
-            });
-
-            modelBuilder.Entity<AspNetUserToken>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-                entity.Property(e => e.LoginProvider).HasMaxLength(128);
-                entity.Property(e => e.Name).HasMaxLength(128);
-
-                entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
-            });
-
             modelBuilder.Entity<ClientProfile>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__ClientPr__3214EC07FDD58F6E");
+                entity.HasKey(up => new { up.UserId, up.PlaceId }).HasName("PK__ClientProfile__3214EC07700D5062"); ;
 
-                entity.ToTable("ClientProfile");
-
-                entity.Property(e => e.Address).HasMaxLength(200);
-                entity.Property(e => e.UserId).HasMaxLength(450);
-
-                entity.HasOne(d => d.User).WithMany(p => p.ClientProfiles)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_ClientProfile_AspNetUsers");
+                entity.HasOne<IdentityUser>()
+                    .WithMany()
+                    .HasForeignKey(cp => cp.UserId);
             });
 
             modelBuilder.Entity<Equipment>(entity =>
@@ -275,6 +181,23 @@ namespace Accountool.Data
 
                 entity.Property(e => e.Name).HasMaxLength(200);
             });
+
+            modelBuilder.Entity<UserPlace>()
+                .HasKey(u => new { u.UserId, u.PlaceId });
+
+            modelBuilder.Entity<UserPlace>()
+                .HasOne(u => u.User)
+                .WithMany()
+                .HasForeignKey(u => u.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserPlace>()
+                .HasOne(p => p.Place)
+                .WithMany()
+                .HasForeignKey(p => p.PlaceId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             OnModelCreatingPartial(modelBuilder);base.OnModelCreating(modelBuilder);
         }

@@ -46,8 +46,5 @@ namespace Accountool.Models.Entities
 
         [InverseProperty("Place")]
         public virtual ICollection<Contract> Contracts { get; set; } = new List<Contract>();
-
-        [InverseProperty("Places")]
-        public virtual ICollection<AspNetUser> Users { get; set; } = new List<AspNetUser>();
     }
 }

@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -42,34 +47,39 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Prediction" asp-action="Index">Prediction</a>
                         </li>
                     </ul>
-                    <a class="navbar-brand mx-auto text-white" asp-area="" asp-controller="Home" asp-action="Index">Name of your company</a>
+                    <a class="navbar-brand mx-auto text-white" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["CompanyName"]</a>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding-bottom: 600px;">
         @RenderBody()
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="demo-content bg-alt col">
-                <div style="color:white">Trading object type "Kiosk"</div>
-                <img src="/images/kiosk.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Kiosk" "">
-            </div>
-            <div class="demo-content bg-alt col">
-                <div style="color:white">Non-insulated trading object type</div>
-                <img src="/images/objekt.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Non-insulated trading object type">
-            </div>
-            <div class="demo-content bg-alt col">
-                <div style="color:white">Trading object type "Pavilion"</div>
-                <img src="/images/pavilion.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Pavilion" "">
+    <footer class="border-top footer text-muted">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="demo-content bg-alt col">
+                    <div style="color:white">Trading object type "Kiosk"</div>
+                    <img src="/images/kiosk.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Kiosk" "">
+                </div>
+                <div class="demo-content bg-alt col">
+                    <div style="color:white">Non-insulated trading object type</div>
+                    <img src="/images/objekt.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Non-insulated trading object type">
+                </div>
+                <div class="demo-content bg-alt col">
+                    <div style="color:white">Trading object type "Pavilion"</div>
+                    <img src="/images/pavilion.jpg" class="img-fluid" style="height: 500px; object-fit: cover;" alt="Trading object type " "Pavilion" "">
+                </div>
             </div>
         </div>
-    </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Accountool - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container d-flex justify-content-between">
+            <div>
+                <span style="color: white;">&copy; 2024 - Accountool - </span><a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: white;">Privacy</a>
+            </div>
+            <div>
+                <a href="@Url.Action("Index", "Feedback")" style="color: white;">Обратная связь</a>
+            </div>
         </div>
     </footer>
     @await RenderSectionAsync("Scripts", required: false)

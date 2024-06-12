@@ -1,5 +1,8 @@
-﻿using Accountool.Models.Services;
+﻿using Accountool.Models.Services.EmailService;
+using Accountool.Models.Services.EmailService.Model;
+using Accountool.Models.Services.Identity;
 using Accountool.Models.ViewModel.Feedback;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Accountool.Controllers
@@ -7,11 +10,11 @@ namespace Accountool.Controllers
     public class FeedbackController : Controller
     {
         private readonly IEmailService _emailService;
-        private readonly IdentityService _identityService;
+        private readonly IIdentityService _identityService;
 
         public FeedbackController(
             IEmailService emailService,
-            IdentityService identityService)
+            IIdentityService identityService)
         {
             _emailService = emailService;
             _identityService = identityService;
@@ -24,21 +27,29 @@ namespace Accountool.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendFeedback(FeedbackViewModel model)
+        public async Task<IActionResult> SendFeedback(FeedbackViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var adminEmails = await _identityService.GetAdminEmailsAsync();
-
+                var config = new MapperConfiguration(cfg => cfg.CreateMap<FeedbackViewModel, FeedbackModel>());
+                var mapper = config.CreateMapper();
+                var model = mapper.Map<FeedbackModel>(viewModel);
                 if (adminEmails.Any())
                 {
-                    _emailService.SendEmailAsync(adminEmails, "Новое сообщение обратной связи", model.Message);
+                    var emailMessage = await _emailService.PrepareSupportEmailMessage(adminEmails, "Новое сообщение обратной связи", model);
+                    await _emailService.SendEmailAsync(emailMessage);
                 }
 
-                return RedirectToAction("FeedbackSent"); // представление для успешной отправки сообщения
+                return RedirectToAction("FeedbackSent");
             }
 
-            return View("Index", model);
+            return View("Index", viewModel);
+        }
+
+        public ActionResult FeedbackSent()
+        {
+            return View();
         }
     }
 }

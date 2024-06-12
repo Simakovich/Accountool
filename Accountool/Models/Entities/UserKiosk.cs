@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Accountool.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
-namespace Accountool.Models.Entities
+public class UserPlace
 {
-    public class UserPlace
-    {
-        [ForeignKey("User")]
-        public string UserId { get; set; }
+    public string UserId { get; set; }
+    public int PlaceId { get; set; }
 
-        [ForeignKey("Place")]
-        public int PlaceId { get; set; }
-
-        public virtual AspNetUser User { get; set; }
-        public virtual Place Place { get; set; }
-    }
+    public IdentityUser User { get; set; }
+    public Place Place { get; set; }
 }
